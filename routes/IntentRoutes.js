@@ -55,6 +55,9 @@ router.post('/', async (req, res) => {
 
 // Update an Intent
 router.put('/:id', async (req, res) => {
+    if (req.body.training != null){
+        req.body.training = req.body.training.split(',').map(item => item.trim());
+    }
     try{
         const data = await Intent.findByIdAndUpdate
             (req.params.id, req.body

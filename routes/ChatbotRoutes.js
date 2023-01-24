@@ -25,6 +25,17 @@ router.get('/:id', async (req, res) => {
     }
 })
 
+// Get chatbot by owner
+router.get('/owner/:owner', async (req, res) => {
+    try{
+        const data = await Chatbot.find({owner: req.params.owner});
+        res.json(data)
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+
 // Create a chatbot
 router.post('/', async (req, res) => {
     intents = req.body.intents.split(',').map(item => item.trim());
@@ -47,6 +58,9 @@ router.post('/', async (req, res) => {
 
 // Update a chatbot by ID
 router.put('/:id', async (req, res) => {
+    if (req.body.intents != null){
+        req.body.intents = req.body.intents.split(',').map(item => item.trim());
+    }
     try{
         const data = await Chatbot.findByIdAndUpdate
             (req.params.id, req.body, {new: true, runValidators: true});
