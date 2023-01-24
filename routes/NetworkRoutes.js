@@ -37,32 +37,46 @@ router.get('/owner/:owner', async (req, res) => {
 
 // Create a network
 router.post('/', async (req, res) => {
-    const network = new Network({
-        owner: req.body.owner,
-        name: req.body.name,
-        description: req.body.description,
-        father: req.body.father,
-        sons: req.body.sons
-    })
-    try{
-        const data = await network.save();
-        res.status(201).json(data)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
+    sons = req.body.sons.split(',').map(item => item.trim());
+    // Check father cannot be son
+    if (sons.includes(req.body.father)){
+        res.status(400).json({message: "Father cannot be son"})
+    } else {
+        const network = new Network({
+            owner: req.body.owner,
+            name: req.body.name,
+            description: req.body.description,
+            father: req.body.father,
+            sons: sons
+        })
+        try{
+            const data = await network.save();
+            res.status(201).json(data)
+        }
+        catch(error){
+            res.status(400).json({message: error.message})
+        }
     }
 })
 
 // Update a network
 router.put('/:id', async (req, res) => {
-    try{
-        const data = await Network.findByIdAndUpdate
-            (req.params.id, req.body
-                , {new: true, runValidators: true});
-        res.json(data)
+    if (req.body.sons != null){
+        req.body.sons = req.body.sons.split(',').map(item => item.trim());
     }
-    catch(error){
-        res.status(400).json({message: error.message})
+    // Check father cannot be son
+    if (req.body.sons.includes(req.body.father)){
+        res.status(400).json({message: "Father cannot be son"})
+    } else {
+        try{
+            const data = await Network.findByIdAndUpdate
+                (req.params.id, req.body
+                    , {new: true, runValidators: true});
+            res.json(data)
+        }
+        catch(error){
+            res.status(400).json({message: error.message})
+        }
     }
 })
 
