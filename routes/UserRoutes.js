@@ -156,9 +156,11 @@ router.delete('/:id', async (req, res) => {
 // Log in user and return user data
 router.post('/login', async (req, res) => {
     try {
-        const user = await User.findOne ({ email: req.body.email });
+        // Encrypt password
+        const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+        const user = await User.findOne ({ username: req.body.username });
         if (user) {
-            const validPassword = await bcrypt.compare(req.body.password, user.password);
+            const validPassword = await bcrypt.compare(password, user.password);
             if (validPassword) {
                 const payload = user.cleanup();
                 const accessToken = generateAccessToken(payload, JWT_SECRET);
@@ -170,7 +172,7 @@ router.post('/login', async (req, res) => {
                 res.status(400).json({ message: 'Invalid password' });
             }
         } else {
-            res.status(400).json({ message: 'Invalid email' });
+            res.status(400).json({ message: 'User not found' });
         }
     } catch (err) {
         res.status(400).json({ message: 'Cannot login user right now, try again later' });
