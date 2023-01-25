@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "git submodule update --init --recursive && nodemon index.js"
   },
   "repository": {
     "type": "git",
