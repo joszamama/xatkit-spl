@@ -156,11 +156,9 @@ router.delete('/:id', async (req, res) => {
 // Log in user and return user data
 router.post('/login', async (req, res) => {
     try {
-        // Encrypt password
-        const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
         const user = await User.findOne ({ username: req.body.username });
         if (user) {
-            const validPassword = await bcrypt.compare(password, user.password);
+            const validPassword = await bcrypt.compare(req.body.password, user.password);
             if (validPassword) {
                 const payload = user.cleanup();
                 const accessToken = generateAccessToken(payload, JWT_SECRET);
