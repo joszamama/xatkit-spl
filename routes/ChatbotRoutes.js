@@ -38,14 +38,13 @@ router.get('/owner/:owner', async (req, res) => {
 
 // Create a chatbot
 router.post('/', async (req, res) => {
-    intents = req.body.intents.split(',').map(item => item.trim());
     const chatbot = new Chatbot({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         description: req.body.description,
         owner: req.body.owner,
         role: req.body.role,
-        intents: intents
+        intents: req.body.intents
     })
     try{
         const data = await chatbot.save();
@@ -59,15 +58,16 @@ router.post('/', async (req, res) => {
 // Update a chatbot by ID
 router.put('/:id', async (req, res) => {
     if (req.body.intents != null){
-        req.body.intents = req.body.intents.split(',').map(item => item.trim());
-    }
-    try{
-        const data = await Chatbot.findByIdAndUpdate
-            (req.params.id, req.body, {new: true, runValidators: true});
-        res.json(data)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
+        try{
+            const data = await Chatbot.findByIdAndUpdate
+                (req.params.id, req.body, {new: true, runValidators: true});
+            res.json(data)
+        }
+        catch(error){
+            res.status(400).json({message: error.message})
+        }
+    } else {
+        res.status(400).json({message: 'Intents cannot be null'})
     }
 })
 
