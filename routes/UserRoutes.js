@@ -142,38 +142,46 @@ router.put('/:id', async (req, res) => {
 
 // Delete existing user by ID
 router.delete('/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const data = await User.findByIdAndDelete(id)
-        res.send(`The user has been deleted.`)
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
+    const user= await User.findById(req.params.id);
+    if (user) {
+        try {
+            const data = await User.findByIdAndDelete(user.id)
+            res.status(200).json({ message: 'User has been deleted' })
+        }
+        catch (error) {
+            res.status(400).json({ message: 'User cannot be deleted right now, try again later' })
+        }
+    } else {
+        res.status(404).json({ message: 'User not found' })
     }
 })
 
 
 // Log in user and return user data
 router.post('/login', async (req, res) => {
-    try {
-        const user = await User.findOne ({ username: req.body.username });
-        if (user) {
-            const validPassword = await bcrypt.compare(req.body.password, user.password);
-            if (validPassword) {
-                const payload = user.cleanup();
-                const accessToken = generateAccessToken(payload, JWT_SECRET);
-                res.status(200).send({
-                  message: "User authenticated",
-                  accessToken,
-                });
+    if (!req.body.username || !req.body.password) {
+        return res.status(400).json({ error: 'Username and password are required' });
+    } else {
+        try {
+            const user = await User.findOne ({ username: req.body.username });
+            if (user) {
+                const validPassword = await bcrypt.compare(req.body.password, user.password);
+                if (validPassword) {
+                    const payload = user.cleanup();
+                    const accessToken = generateAccessToken(payload, JWT_SECRET);
+                    res.status(200).send({
+                      message: "User authenticated",
+                      accessToken,
+                    });
+                } else {
+                    res.status(400).json({ message: 'Invalid password' });
+                }
             } else {
-                res.status(400).json({ message: 'Invalid password' });
+                res.status(400).json({ message: 'User not found' });
             }
-        } else {
-            res.status(400).json({ message: 'User not found' });
+        } catch (err) {
+            res.status(400).json({ message: 'Cannot login user right now, try again later' });
         }
-    } catch (err) {
-        res.status(400).json({ message: 'Cannot login user right now, try again later' });
     }
 });
 

@@ -5,12 +5,21 @@ const router = express.Router()
 
 // Get all chatbots
 router.get('/', async (req, res) => {
-    try{
-        const data = await Chatbot.find();
-        res.json(data)
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
+    if (req.query.ownerId) {
+        try {
+            const data = await Chatbot.find({owner: req.query.ownerId});
+            res.json(data)
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
+    } else {
+        try{
+            const data = await Chatbot.find();
+            res.json(data)
+        }
+        catch(error){
+            res.status(500).json({message: error.message})
+        }
     }
 })
 
@@ -18,17 +27,6 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try{
         const data = await Chatbot.findById(req.params.id);
-        res.json(data)
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Get chatbot by owner
-router.get('/owner/:owner', async (req, res) => {
-    try{
-        const data = await Chatbot.find({owner: req.params.owner});
         res.json(data)
     }
     catch(error){
@@ -57,14 +55,25 @@ router.post('/', async (req, res) => {
 
 // Update a chatbot by ID
 router.put('/:id', async (req, res) => {
-    if (req.body.intents != null){
-        try{
-            const data = await Chatbot.findByIdAndUpdate
-                (req.params.id, req.body, {new: true, runValidators: true});
-            res.json(data)
+    if (req.body.intents){
+        try {
+            const data = await Chatbot.updateOne(
+                { _id: req.params.id },
+                {
+                    $set: {
+                        name: req.body.name,
+                        description: req.body.description,
+                        owner: req.body.owner,
+                        role: req.body.role,
+                        intents: req.body.intents,
+                        updated: false
+                    }
+                }
+            );
+            res.status(201).json({message: 'Chatbot updated'});
         }
         catch(error){
-            res.status(400).json({message: error.message})
+            res.status(500).json({message: error.message})
         }
     } else {
         res.status(400).json({message: 'Intents cannot be null'})
@@ -82,8 +91,18 @@ router.delete('/:id', async (req, res) => {
         }
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500).json({message: 'Chatbot not found'})
     }
 })
+
+router.post('/:id/compile', async (req, res) => {
+    const chatbot = await Chatbot.findById(req.params.id);
+    if (chatbot) {
+        res.status(200).json({message: 'Chatbot compiled'})
+    } else {
+        res.status(404).json({message: 'Chatbot not found'})
+    }
+})
+
 
 module.exports = router;
