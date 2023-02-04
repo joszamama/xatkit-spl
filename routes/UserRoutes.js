@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require('../models/User');
-const jwt_decode = require('jwt-decode');
+
 const router = express.Router()
 require('dotenv').config();
 
@@ -14,7 +14,6 @@ router.get('/', async (req, res) => {
     if (req.headers.authorization) {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
-            console.log(verify.id);
             if (verify.id && verify.id === ADMIN_ID) {
                 const data = await User.find();
                 res.json(data.map(user => user.cleanup()))
@@ -34,7 +33,6 @@ router.get('/me', async (req, res) => {
     if (req.headers.authorization) {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
-            console.log(verify);
             if (verify.id) {
                 const data = await User.findById(verify.id);
                 res.json(data.cleanup())
@@ -84,7 +82,7 @@ router.post('/', async (req, res) => {
     }
 })                  
 
-// Update user by ID
+// Update user /me
 router.patch('/me', async (req, res) => {
     if (req.headers.authorization) {
         try {
@@ -108,6 +106,99 @@ router.patch('/me', async (req, res) => {
                 }        
             } else {
                 res.status(404).json({message: "You are not authorized to edit this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Update user by ID (ADMIN ONLY)
+router.patch('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const user = await User.findById(req.params.id);
+                    if (!user) {
+                        res.status(404).json({message: "User not found"});
+                    } else if (user.id === ADMIN_ID) {
+                        res.status(404).json({message: "Administator cannot be edited"});
+                    } else {
+                        if (req.body.username) {
+                            user.username = req.body.username;
+                        }
+                        if (req.body.email) {
+                            user.email = req.body.email;
+                        }
+                        if (req.body.password) {
+                            user.password = req.body.password;
+                        }
+                        const updatedUser = await user.save();
+                        res.status(200).json(updatedUser);
+                    }
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to edit this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user /me
+router.delete('/me', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const user = await User.findById(verify.id);
+                    await user.remove();
+                    res.status(200).json({message: "User deleted"});
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user by ID (ADMIN ONLY)
+router.delete('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const user = await User.findById(req.params.id);
+                    if (!user) {
+                        return res.status(404).json({message: "User not found"});
+                    } else if (user._id === ADMIN_ID) {
+                        return res.status(404).json({message: "You cannot delete the admin user"});
+                    } else {
+                        await user.remove();
+                        res.status(200).json({message: "User deleted"});
+                    }
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this user"});
             }
         } catch (error) {
             res.status(404).json({message: "Token not valid"});

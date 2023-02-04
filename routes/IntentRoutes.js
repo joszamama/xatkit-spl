@@ -1,88 +1,238 @@
 const express = require('express');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const Intent = require('../models/Intent');
-const Chatbot = require('../models/Chatbot');
-const jwt_decode = require('jwt-decode');
 const router = express.Router()
 require('dotenv').config();
 
-ADMIN_ID = process.env.ADMIN_ID;
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_ID = process.env.ADMIN_ID;
 
-// Get all intents
+// Get all intents (ADMIN ONLY)
 router.get('/', async (req, res) => {
-    const token = jwt_decode(req.headers.authorization);
-    console.log("HOLA: "+ token.id);
-    if (token.id === ADMIN_ID) {
-        try{
-            const data = await Intent.find();
-            res.json(data)
-        }
-        catch(error){
-            res.status(500).json({message: error.message})
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Intent.find();
+                res.json(data.map(intent => intent.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
     } else {
-        res.status(404).json({message: "You are not authorized to view this page"})
+        res.status(404).json({message: "Token not found"});
     }
 })
 
-// Get an intent by ID
-router.get('/:id', async (req, res) => {
-    try{
-        const data = await Intent.findById(req.params.id);
-        res.json(data)
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Create an Intent
-router.post('/', async (req, res) => {
-    training = req.body.training.split(',').map(item => item.trim());
-    const intent = new Intent({
-        owner: req.body.owner,
-        title: req.body.title,
-        description: req.body.description,
-        training: training,
-    })
-    try{
-        const data = await intent.save();
-        res.status(201).json(data)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
-    }
-})
-
-// Update an Intent
-router.put('/:id', async (req, res) => {
-    if (req.body.training != null){
-        req.body.training = req.body.training.split(',').map(item => item.trim());
-    }
-    try{
-        const data = await Intent.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
-        res.json(data)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
-    }
-})
-
-// Delete an Intent
-router.delete('/:id', async (req, res) => {
-    try{
-        const affectedChatbots = await Chatbot.updateMany(
-            {intents: req.params.id},
-            {$pull: {intents: req.params.id}}
-        );
-        const data = await Intent.findByIdAndDelete(req.params.id);
-        if (data === null || data === undefined || data === '') {
-            res.status(404).json({message: "Intent not found"})
-        } else {
-            res.json({message: "Intent deleted"})
+// Get my intents
+router.get('/mine', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const data = await Intent.find({owner: verify.id});
+                if (data) {
+                    res.json(data.map(intent => intent.cleanup()))
+                } else {
+                    res.json(data)
+                }
+            } else {
+                res.status(404).json({message: "No intent found"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
-    catch(error){
-        res.status(500).json({message: error.message})
+})
+
+// Get intents by ID (ADMIN ONLY)
+router.get('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Intent.findById(req.params.id);
+                res.json(data.cleanup())
+            } else {
+                res.status(404).json({message: "You are not authorized to view this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Get intents from a user by ID (ADMIN ONLY)
+router.get('/owner/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Intent.find({owner: req.params.id});
+                if (data) {
+                    res.json(data.map(intent => intent.cleanup()))
+                } else {
+                    res.json(data)
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to view this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})              
+
+// Create a new intent
+router.post('/', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const training = req.body.training.split(',').map(item => item.trim());
+                const intent = new Intent({
+                    owner: verify.id,
+                    title: req.body.title,
+                    description: req.body.description,
+                    training: training,
+                })
+                const newIntent = await intent.save();
+                res.status(201).json(newIntent.cleanup());
+            } else {
+                res.status(404).json({message: "You are not authorized to create this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})                  
+
+// Update my intents by ID
+router.patch('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const intent = await Intent.findById(req.params.id);
+                if (!intent) {
+                    res.status(404).json({message: "Intent not found"});
+                } else if (intent.owner != verify.id) {
+                    res.status(404).json({message: "You are not authorized to edit this intent"});
+                } else {
+                    if (req.body.title) {
+                        intent.title = req.body.title;
+                    }
+                    if (req.body.description) {
+                        intent.description = req.body.description;
+                    }
+                    if (req.body.training) {
+                        intent.training = req.body.training.split(',').map(item => item.trim());
+                    }
+                    const updatedIntent = await intent.save();
+                    res.json(updatedIntent.cleanup());
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to edit this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Update any intent by ID (ADMIN ONLY)
+router.patch('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const intent = await Intent.findById(req.params.id);
+                if (!intent) {
+                    res.status(404).json({message: "Intent not found"});
+                } else {
+                    if (req.body.title) {
+                        intent.title = req.body.title;
+                    }
+                    if (req.body.description) {
+                        intent.description = req.body.description;
+                    }
+                    if (req.body.training) {
+                        intent.training = req.body.training.split(',').map(item => item.trim());
+                    }
+                    const updatedIntent = await intent.save();
+                    res.json(updatedIntent.cleanup());
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to edit this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user /me
+router.delete('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const intent = await Intent.findById(req.params.id);
+                if (!intent) {
+                    res.status(404).json({message: "Intent not found"});
+                } else if (intent.owner != verify.id) {
+                    res.status(404).json({message: "You are not authorized to delete this intent"});
+                } else {
+                    await intent.remove();
+                    res.json({message: "Intent deleted"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user by ID (ADMIN ONLY)
+router.delete('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const intent = await Intent.findById(req.params.id);
+                if (!intent) {
+                    res.status(404).json({message: "Intent not found"});
+                } else {
+                    await intent.remove();
+                    res.json({message: "Intent deleted"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this intent"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
 })
 
