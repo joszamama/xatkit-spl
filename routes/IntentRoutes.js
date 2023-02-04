@@ -5,22 +5,25 @@ const jwt_decode = require('jwt-decode');
 const router = express.Router()
 require('dotenv').config();
 
+JWT_SECRET = process.env.JWT_SECRET;
 ADMIN_ID = process.env.ADMIN_ID;
 
 // Get all intents
 router.get('/', async (req, res) => {
-    const token = jwt_decode(req.headers.authorization);
-    console.log("HOLA: "+ token.id);
-    if (token.id === ADMIN_ID) {
-        try{
-            const data = await Intent.find();
-            res.json(data)
-        }
-        catch(error){
-            res.status(500).json({message: error.message})
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Intent.find();
+                res.json(data.map(intent => intent.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this page"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
     } else {
-        res.status(404).json({message: "You are not authorized to view this page"})
+        res.status(404).json({message: "Token not found"});
     }
 })
 
