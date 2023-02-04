@@ -15,7 +15,7 @@ ChatbotSchema.methods.cleanup = function() {
         name: this.name,
         description: this.description,
         intents: this.intents,
-        compiled: this.updated
+        compiled: this.compiled
     }
 }
 
