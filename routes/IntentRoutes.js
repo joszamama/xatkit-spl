@@ -50,6 +50,34 @@ router.get('/mine', async (req, res) => {
     }
 })
 
+// Get my intents by ID
+router.get('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const intent = await Intent.findById(req.params.id);
+                    if (intent.owner != verify.id) {
+                        res.status(404).json({message: "You are not authorized to view this intent"});
+                        return;
+                    }
+                    res.json(intent.cleanup())
+                } catch (error) {
+                    res.status(404).json({message: "No intent found"});
+                    return;
+                }
+            } else {
+                res.status(404).json({message: "No user found"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
 // Get intents by ID (ADMIN ONLY)
 router.get('/:id', async (req, res) => {
     if (req.headers.authorization) {

@@ -89,6 +89,84 @@ router.get('/owner/:id', async (req, res) => {
     }
 })              
 
+// Get my chatbot by ID
+router.get('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const data = await Chatbot.findById(req.params.id);
+                    if (data.owner == verify.id) {
+                        res.json(data.cleanup())
+                    } else {
+                        res.status(404).json({message: "You are not authorized to view this chatbot"});
+                    }
+                }
+                catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Get chatbots by status
+router.get('/status/mine', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const data = await Chatbot.find({owner: verify.id});
+                try {
+                    const compiled = data.filter(chatbot => chatbot.compiled);
+                    const notCompiled = data.filter(chatbot => !chatbot.compiled);
+                    res.json({compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup())})
+                } catch (error) {
+                    res.json({compiled: [], notCompiled: []})
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Get chatbots by status (ADMIN ONLY)
+router.get('/all/status', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const data = await Chatbot.find();
+                    const compiled = data.filter(chatbot => chatbot.compiled);
+                    const notCompiled = data.filter(chatbot => !chatbot.compiled);
+                    res.json({compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup())})
+                } catch (error) {
+                    res.json({compiled: [], notCompiled: []})
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
 // Create a new intent
 router.post('/', async (req, res) => {
     if (req.headers.authorization) {
@@ -152,7 +230,7 @@ router.patch('/mine/:id', async (req, res) => {
                 if (req.body.name) chatbot.name = req.body.name;
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
-                if (req.body.compiled) chatbot.compiled = req.body.compiled;
+                chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();
                     res.json(data.cleanup());
@@ -170,7 +248,6 @@ router.patch('/mine/:id', async (req, res) => {
     }
 })
 
-
 // Update any chatbot by ID (ADMIN ONLY)
 router.patch('/:id', async (req, res) => {
     if (req.headers.authorization) {
@@ -181,7 +258,7 @@ router.patch('/:id', async (req, res) => {
                 if (req.body.name) chatbot.name = req.body.name;
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
-                if (req.body.compiled) chatbot.compiled = req.body.compiled;
+                chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();
                     res.json(data.cleanup());
@@ -212,9 +289,11 @@ router.delete('/mine/:id', async (req, res) => {
                         res.status(404).json({message: "You can only delete chatbots that you own"});
                         return;
                     }
-                    const deleted = await data.delete();
-                    // TODO: When deleting a chatbot, delete all objects in DB that reference it
-                    res.json({message: "Chatbot deleted successfully"});
+                    await Chatbot.deleteOne({_id: req.params.id});
+                    if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
+                        fs.unlink(`./bots/${data._id.toString()}.json`);
+                    }
+                    res.json({message: "Chatbot deleted"});
                 } catch (error) {
                     res.status(404).json({message: "Chatbot not found"});
                 }
@@ -237,9 +316,11 @@ router.delete('/:id', async (req, res) => {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id && verify.id === ADMIN_ID) {
                 try {
-                    const data = await Chatbot.findByIdAndDelete(req.params.id);
-                    // TODO: When deleting a chatbot, delete all objects in DB that reference it
-                    res.json({message: "Chatbot deleted successfully"});
+                    await Chatbot.deleteOne({_id: req.params.id});
+                    if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
+                        fs.unlink(`./bots/${data._id.toString()}.json`);
+                    }
+                    res.json({message: "Chatbot deleted"});
                 } catch (error) {
                     res.status(404).json({message: "Chatbot not found"});
                     return;
