@@ -4,7 +4,6 @@ const ChatbotSchema = new mongoose.Schema({
     owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: [true, "can't be blank"]},
     name: {type: String, required: [true, "can't be blank"]},
     description: {type: String, required: [true, "can't be blank"]},
-    role: {type: String, enum:["Father", "Son"], ref: 'Role', required: [true, "can't be blank"]},
     intents: {type: [mongoose.Schema.Types.ObjectId], ref: 'Intent'},
     compiled: {type: Boolean, default: false}
 }, {timestamps: true})
@@ -15,7 +14,6 @@ ChatbotSchema.methods.cleanup = function() {
         owner: this.owner,
         name: this.name,
         description: this.description,
-        role: this.role,
         intents: this.intents,
         compiled: this.updated
     }

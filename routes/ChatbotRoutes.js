@@ -1,108 +1,255 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const jwt = require("jsonwebtoken");
 const Chatbot = require('../models/Chatbot');
+const Intent = require('../models/Intent');
 const router = express.Router()
+require('dotenv').config();
 
-// Get all chatbots
+const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_ID = process.env.ADMIN_ID;
+
+// Get all chatbots (ADMIN ONLY)
 router.get('/', async (req, res) => {
-    if (req.query.ownerId) {
+    if (req.headers.authorization) {
         try {
-            const data = await Chatbot.find({owner: req.query.ownerId});
-            res.json(data)
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Chatbot.find();
+                res.json(data.map(chatbot => chatbot.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
         } catch (error) {
-            res.status(500).json({message: error.message})
+            res.status(404).json({message: "Token not valid"});
         }
     } else {
-        try{
-            const data = await Chatbot.find();
-            res.json(data)
-        }
-        catch(error){
-            res.status(500).json({message: error.message})
-        }
+        res.status(404).json({message: "Token not found"});
     }
 })
 
-// Get chatbot by ID
-router.get('/:id', async (req, res) => {
-    try{
-        const data = await Chatbot.findById(req.params.id);
-        res.json(data)
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
-    }
-})
-
-// Create a chatbot
-router.post('/', async (req, res) => {
-    const chatbot = new Chatbot({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        description: req.body.description,
-        owner: req.body.owner,
-        role: req.body.role,
-        intents: req.body.intents
-    })
-    try{
-        const data = await chatbot.save();
-        res.status(201).json(data)
-    }
-    catch(error){
-        res.status(400).json({message: error.message})
-    }
-})
-
-// Update a chatbot by ID
-router.put('/:id', async (req, res) => {
-    if (req.body.intents){
+// Get my chatbots
+router.get('/mine', async (req, res) => {
+    if (req.headers.authorization) {
         try {
-            const data = await Chatbot.updateOne(
-                { _id: req.params.id },
-                {
-                    $set: {
-                        name: req.body.name,
-                        description: req.body.description,
-                        owner: req.body.owner,
-                        role: req.body.role,
-                        intents: req.body.intents,
-                        updated: false
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const data = await Chatbot.find({owner: verify.id});
+                res.json(data.map(chatbot => chatbot.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Get a chatbot by ID (ADMIN ONLY)
+router.get('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Chatbot.findById(req.params.id);
+                if (data) {
+                    res.json(data.cleanup())
+                } else {
+                    res.json(data)
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Get chatbots from a user by ID (ADMIN ONLY)
+router.get('/owner/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await Chatbot.find({owner: req.params.id});
+                res.json(data.map(chatbot => chatbot.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})              
+
+// Create a new intent
+router.post('/', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                for (let i = 0; i < req.body.intents.length; i++) {
+                    try{
+                        const intent = await Intent.findById(req.body.intents[i]);
+                        if (intent.owner != verify.id) {
+                            res.status(404).json({message: "You can only create chatbots with intents that you own"});
+                            return;
+                        }
+                    } catch {
+                        res.status(404).json({message: "Intent not found"});
+                        return;
                     }
                 }
-            );
-            res.status(201).json({message: 'Chatbot updated'});
-        }
-        catch(error){
-            res.status(500).json({message: error.message})
+                const chatbot = new Chatbot({
+                    name: req.body.name,
+                    description: req.body.description,
+                    intents: req.body.intents,
+                    owner: verify.id
+                });
+                const data = await chatbot.save();
+                res.json(data.cleanup());
+            } else {
+                res.status(404).json({message: "You are not authorized to create this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
     } else {
-        res.status(400).json({message: 'Intents cannot be null'})
+        res.status(404).json({message: "Token not found"});
+    }
+})                  
+
+// Update my chatbot by ID
+router.patch('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const chatbot = await Chatbot.findById(req.params.id);
+                if (chatbot.owner != verify.id) {
+                    res.status(404).json({message: "You can only update chatbots that you own"});
+                    return;
+                }
+                for (let i = 0; i < req.body.intents.length; i++) {
+                    try{
+                        const intent = await Intent.findById(req.body.intents[i]);
+                        if (intent.owner != verify.id) {
+                            res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                            return;
+                        }
+                    } catch {
+                        res.status(404).json({message: "Intent not found"});
+                        return;
+                    }
+                }
+                if (req.body.name) chatbot.name = req.body.name;
+                if (req.body.description) chatbot.description = req.body.description;
+                if (req.body.intents) chatbot.intents = req.body.intents;
+                if (req.body.compiled) chatbot.compiled = req.body.compiled;
+                try {
+                    const data = await chatbot.save();
+                    res.json(data.cleanup());
+                } catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to update this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
 })
 
-// Delete a chatbot by ID
+
+// Update any chatbot by ID (ADMIN ONLY)
+router.patch('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const chatbot = await Chatbot.findById(req.params.id);
+                if (req.body.name) chatbot.name = req.body.name;
+                if (req.body.description) chatbot.description = req.body.description;
+                if (req.body.intents) chatbot.intents = req.body.intents;
+                if (req.body.compiled) chatbot.compiled = req.body.compiled;
+                try {
+                    const data = await chatbot.save();
+                    res.json(data.cleanup());
+                } catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to update this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete chatbot /me
+router.delete('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const data = await Chatbot.findById(req.params.id);
+                    if (data.owner != verify.id) {
+                        res.status(404).json({message: "You can only delete chatbots that you own"});
+                        return;
+                    }
+                    const deleted = await data.delete();
+                    // TODO: When deleting a chatbot, delete all objects in DB that reference it
+                    res.json({message: "Chatbot deleted successfully"});
+                } catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+
+// Delete chatbot by ID (ADMIN ONLY)
 router.delete('/:id', async (req, res) => {
-    try{
-        const data = await Chatbot.findByIdAndDelete(req.params.id);
-        if (data === null || data === undefined || data === '') {
-            return res.status(404).json({message: 'Chatbot not found'})
-        } else {
-            res.json({message: 'Chatbot deleted'})
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const data = await Chatbot.findByIdAndDelete(req.params.id);
+                    // TODO: When deleting a chatbot, delete all objects in DB that reference it
+                    res.json({message: "Chatbot deleted successfully"});
+                } catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
-    }
-    catch(error){
-        res.status(500).json({message: 'Chatbot not found'})
-    }
-})
-
-router.post('/:id/compile', async (req, res) => {
-    const chatbot = await Chatbot.findById(req.params.id);
-    if (chatbot) {
-        res.status(200).json({message: 'Chatbot compiled'})
     } else {
-        res.status(404).json({message: 'Chatbot not found'})
+        res.status(404).json({message: "Token not found"});
     }
 })
-
 
 module.exports = router;

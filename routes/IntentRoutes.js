@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Intent = require('../models/Intent');
 const router = express.Router()
@@ -198,8 +197,9 @@ router.delete('/mine/:id', async (req, res) => {
                 } else if (intent.owner != verify.id) {
                     res.status(404).json({message: "You are not authorized to delete this intent"});
                 } else {
-                    await intent.remove();
-                    res.json({message: "Intent deleted"});
+                    const deletedIntent = await Intent.findByIdAndDelete(req.params.id);
+                    const deletedChatbots = await Chatbot.updateMany({intents: req.params.id}, {$pull: {intents: req.params.id}});
+                    res.json(deletedIntent.cleanup());
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to delete this intent"});
