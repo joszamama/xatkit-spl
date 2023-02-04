@@ -12,8 +12,8 @@ IntentSchema.methods.cleanup = function() {
         id: this._id,
         owner: this.owner,
         title: this.title,
+        description: this.description,
         training: this.training,
-        chatbots: this.chatbots
     }
 }
 

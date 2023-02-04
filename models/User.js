@@ -8,15 +8,17 @@ const UserSchema = new mongoose.Schema({
     password: {type: String, required: [true, "can't be blank"]},
 }, {timestamps: true})
 
+UserSchema.plugin(uniqueValidator, {message: 'is already taken.'});
+
 UserSchema.methods.cleanup = function() {
   return {
       id: this._id,
       username: this.username,
       email: this.email,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
   }
 }
-
-UserSchema.plugin(uniqueValidator, {message: 'is already taken.'});
 
 UserSchema.pre('save', function(next) {
     if (!this.isModified('password')) {

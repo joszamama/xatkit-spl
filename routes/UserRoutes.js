@@ -2,30 +2,67 @@ const express = require('express');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require('../models/User');
+
 const router = express.Router()
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const ADMIN_ID = process.env.ADMIN_ID;
 
-// Get all users
+// Get all users (ADMIN ONLY)
 router.get('/', async (req, res) => {
-    try{
-        const data = await User.find();
-        res.json(data)
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await User.find();
+                res.json(data.map(user => user.cleanup()))
+            } else {
+                res.status(404).json({message: "You are not authorized to view this page"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
 })
 
-// Get user by ID
-router.get('/:id', async (req, res) => {
-    try{
-        const data = await User.findById(req.params.id);
-        res.json(data)
+// Get current user
+router.get('/me', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                const data = await User.findById(verify.id);
+                res.json(data.cleanup())
+            } else {
+                res.status(404).json({message: "No user found"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
-    catch(error){
-        res.status(500).json({message: error.message})
+})
+
+// Get user by ID (ADMIN ONLY)
+router.get('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                const data = await User.findById(req.params.id);
+                res.json(data.cleanup())
+            } else {
+                res.status(404).json({message: "You are not authorized to view this page"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
     }
 })
 
@@ -38,124 +75,138 @@ router.post('/', async (req, res) => {
     })
     try {
         const dataToSave = await data.save();
-        res.status(200).json(dataToSave)
+        res.status(200).json(dataToSave.cleanup())
     }
     catch (error) {
         res.status(400).json({message: error.message})
     }
 })                  
 
-// Update existing user by ID
-router.put('/:id', async (req, res) => {
-    try {
-        email = req.body.email;
-        username = req.body.username;
-        const userToUpdate = await User.findById(req.params.id);
-
-        if (email === undefined || email === null || email === "" || username === undefined || username === null || username === "") {
-            return res.status(400).json({ error: 'Username and email are required' });
-        } else if (userToUpdate === null) {
-            return res.status(400).json({ error: 'User not found' });
-        } else if (userToUpdate.email === email && userToUpdate.username === username) {
-            return res.status(400).json({ error: 'No changes made' });
-        } else if (userToUpdate.email === email && userToUpdate.username !== username && (req.body.password === undefined || req.body.password === null || req.body.password === "")) {
-            const updatedUser = await User.updateOne(
-                { _id: req.params.id },
-
-                {
-                    $set: {
-                        username: req.body.username,
-                    }
-                }
-            );
-            res.status(201).json(updatedUser);
-        } else if (userToUpdate.email === email && userToUpdate.username !== username && (req.body.password !== undefined || req.body.password !== null || req.body.password !== "")) {
-            const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-            const updatedUser = await User.updateOne(
-                { _id: req.params.id },
-
-                {
-                    $set: {
-                        username: req.body.username,
-                        password: password
-                    }
-                }
-            );
-            res.status(201).json(updatedUser);
-        } else if (userToUpdate.email !== email && userToUpdate.username === username && (req.body.password === undefined || req.body.password === null || req.body.password === "")) {
-            const updatedUser = await User.updateOne(
-                { _id: req.params.id },
-
-                {
-                    $set: {
-                        email: req.body.email,
-                    }
-                }
-            );
-            res.status(201).json(updatedUser);
-        } else if (userToUpdate.email !== email && userToUpdate.username === username && (req.body.password !== undefined || req.body.password !== null || req.body.password !== "")) {
-            const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-            const updatedUser = await User.updateOne(
-                { _id: req.params.id },
-
-                {
-                    $set: {
-                        email: req.body.email,
-                        password: password
-                    }
-                }
-            );
-            res.status(201).json(updatedUser);
-        } else {
-            if(userToUpdate.email !== email && userToUpdate.username !== username && (req.body.password === undefined || req.body.password === null || req.body.password === "")) {
-                const updatedUser = await User.updateOne(
-                    { _id: req.params.id },
-                    
-                    {
-                      $set: {
-                        email: req.body.email,
-                        username: req.body.username,
-                      }
-                    }
-                  );
-                  res.status(201).json(updatedUser);
-            } else {
-                const password = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-                const updatedUser = await User.updateOne(
-                  { _id: req.params.id },      
-                  {
-                    $set: {
-                      username: req.body.username,
-                      email: req.body.email,
-                      password: password
-                    }
-                  }
-                );
-                res.status(201).json(updatedUser);
-            }
-        }
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
-    }
-})
-
-// Delete existing user by ID
-router.delete('/:id', async (req, res) => {
-    const user= await User.findById(req.params.id);
-    if (user) {
+// Update user /me
+router.patch('/me', async (req, res) => {
+    if (req.headers.authorization) {
         try {
-            const data = await User.findByIdAndDelete(user.id)
-            res.status(200).json({ message: 'User has been deleted' })
-        }
-        catch (error) {
-            res.status(400).json({ message: 'User cannot be deleted right now, try again later' })
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const user = await User.findById(verify.id);
+                    if (req.body.username) {
+                        user.username = req.body.username;
+                    }
+                    if (req.body.email) {
+                        user.email = req.body.email;
+                    }
+                    if (req.body.password) {
+                        user.password = req.body.password;
+                    }
+                    const updatedUser = await user.save();
+                    res.status(200).json(updatedUser);
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }        
+            } else {
+                res.status(404).json({message: "You are not authorized to edit this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
         }
     } else {
-        res.status(404).json({ message: 'User not found' })
+        res.status(404).json({message: "Token not found"});
     }
 })
 
+// Update user by ID (ADMIN ONLY)
+router.patch('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const user = await User.findById(req.params.id);
+                    if (!user) {
+                        res.status(404).json({message: "User not found"});
+                    } else if (user.id === ADMIN_ID) {
+                        res.status(404).json({message: "Administator cannot be edited"});
+                    } else {
+                        if (req.body.username) {
+                            user.username = req.body.username;
+                        }
+                        if (req.body.email) {
+                            user.email = req.body.email;
+                        }
+                        if (req.body.password) {
+                            user.password = req.body.password;
+                        }
+                        const updatedUser = await user.save();
+                        res.status(200).json(updatedUser);
+                    }
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to edit this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user /me
+router.delete('/me', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const user = await User.findById(verify.id);
+                    await user.remove();
+                    res.status(200).json({message: "User deleted"});
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+// Delete user by ID (ADMIN ONLY)
+router.delete('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id && verify.id === ADMIN_ID) {
+                try {
+                    const user = await User.findById(req.params.id);
+                    if (!user) {
+                        return res.status(404).json({message: "User not found"});
+                    } else if (user._id === ADMIN_ID) {
+                        return res.status(404).json({message: "You cannot delete the admin user"});
+                    } else {
+                        await user.remove();
+                        res.status(200).json({message: "User deleted"});
+                    }
+                } catch (error) {
+                    res.status(404).json({message: "User not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to delete this user"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
 
 // Log in user and return user data
 router.post('/login', async (req, res) => {
