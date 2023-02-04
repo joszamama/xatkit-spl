@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
 const mongoString = process.env.DATABASE_URL;
