@@ -6,7 +6,7 @@ const mongoString = process.env.DATABASE_URL;
 mongoose.connect(mongoString);
 const database = mongoose.connection;
 database.on('error', (error) => {
-    console.log(error)
+    console.log('Database Connection Error: ' + error);
 })
 database.once('connected', () => {
     console.log('Database Connected');
@@ -19,9 +19,9 @@ const ChatbotRoutes = require('./routes/ChatbotRoutes');
 
 const app = express();
 app.use(express.json());
-app.use('/api/users', UserRoutes)
-app.use('/api/intents', IntentRoutes)
-app.use('/api/chatbots', ChatbotRoutes)
+app.use('/api/v1/users', UserRoutes)
+app.use('/api/v1/intents', IntentRoutes)
+app.use('/api/v1/chatbots', ChatbotRoutes)
 
 
 app.get('/', (req, res) => {
