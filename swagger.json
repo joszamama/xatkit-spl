@@ -1,0 +1,672 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Xatkit-SPL",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3001"
+    }
+  ],
+  "paths": {
+    "/api/v1/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "ADM - Get all users",
+        "description": "ADM - Get all users",
+        "operationId": "admGetAllUsers",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create a new user",
+        "description": "Create a new user",
+        "operationId": "createANewUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "joszamama@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "joszamama"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "joszamama"
+                  }
+                }
+              },
+              "example": {
+                "email": "joszamama@gmail.com",
+                "password": "joszamama",
+                "username": "joszamama"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Log in existing user",
+        "description": "Log in existing user",
+        "operationId": "logInExistingUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "example": "joszamama"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "joszamama"
+                  }
+                }
+              },
+              "example": {
+                "password": "joszamama",
+                "username": "joszamama"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get my user",
+        "description": "Get my user",
+        "operationId": "getMyUser",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete my user",
+        "description": "Delete my user",
+        "operationId": "deleteMyUser",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update my user",
+        "description": "Update my user",
+        "operationId": "updateMyUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "2@gmail.com"
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "jejejeje"
+                  }
+                }
+              },
+              "example": {
+                "email": "2@gmail.com",
+                "username": "jejejeje"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/63de5add5bb40f844c6f52bf": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "ADM - Get any user by ID",
+        "description": "ADM - Get any user by ID",
+        "operationId": "admGetAnyUserById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/users/63d961a5e3bc7a1f2b34472c": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "ADM - Delete any user by ID",
+        "description": "ADM - Delete any user by ID",
+        "operationId": "admDeleteAnyUserById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "ADM - Update any user by ID",
+        "description": "ADM - Update any user by ID",
+        "operationId": "admUpdateAnyUserById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents": {
+      "get": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "ADM - Get all intents",
+        "description": "ADM - Get all intents",
+        "operationId": "admGetAllIntents",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "Create a new intent",
+        "description": "Create a new intent",
+        "operationId": "createANewIntent",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "MARIANO"
+                  },
+                  "title": {
+                    "type": "string",
+                    "example": "1"
+                  },
+                  "training": {
+                    "type": "string",
+                    "example": "MAR, IA, NO"
+                  }
+                }
+              },
+              "example": {
+                "description": "MARIANO",
+                "title": "1",
+                "training": "MAR, IA, NO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/mine": {
+      "get": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "Get my intents",
+        "description": "Get my intents",
+        "operationId": "getMyIntents",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/mine/63d963f96d00790ea0c0d9b2": {
+      "delete": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "Delete my intent by ID",
+        "description": "Delete my intent by ID",
+        "operationId": "deleteMyIntentById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "Update my intent by ID",
+        "description": "Update my intent by ID",
+        "operationId": "updateMyIntentById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "cafe calienteee"
+                  }
+                }
+              },
+              "example": {
+                "title": "cafe calienteee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/63de924cff5d1d5e2188a624": {
+      "get": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "ADM - Get any intent by ID",
+        "description": "ADM - Get any intent by ID",
+        "operationId": "admGetAnyIntentById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/owner/63de5add5bb40f844c6f52bf": {
+      "get": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "ADM - Get all intents from user ID",
+        "description": "ADM - Get all intents from user ID",
+        "operationId": "admGetAllIntentsFromUserId",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/63d963f96d00790ea0c0d9b2": {
+      "patch": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "ADM - Update any intent by ID",
+        "description": "ADM - Update any intent by ID",
+        "operationId": "admUpdateAnyIntentById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "holaaa que tall"
+                  }
+                }
+              },
+              "example": {
+                "title": "holaaa que tall"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/intents/63de962b34081711931668cc": {
+      "delete": {
+        "tags": [
+          "Intents"
+        ],
+        "summary": "ADM - Delete any intent by ID",
+        "description": "ADM - Delete any intent by ID",
+        "operationId": "admDeleteAnyIntentById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots": {
+      "get": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "ADM - Get all chatbots",
+        "description": "ADM - Get all chatbots",
+        "operationId": "admGetAllChatbots",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Create a chatbot",
+        "description": "Create a chatbot",
+        "operationId": "createAChatbot",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "example": "CARLITOSBOT"
+                  },
+                  "intents": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "63debe9878d39a8cc462f7b9"
+                    },
+                    "example": [
+                      "63debe9878d39a8cc462f7b9"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "CARLITOSBOT"
+                  }
+                }
+              },
+              "example": {
+                "description": "CARLITOSBOT",
+                "intents": [
+                  "63debe9878d39a8cc462f7b9"
+                ],
+                "name": "CARLITOSBOT"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/mine": {
+      "get": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Get my chatbots",
+        "description": "Get my chatbots",
+        "operationId": "getMyChatbots",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/mine/63debede78d39a8cc462f7c2": {
+      "delete": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Delete my chatbot by ID",
+        "description": "Delete my chatbot by ID",
+        "operationId": "deleteMyChatbotById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Update my chatbot by ID",
+        "description": "Update my chatbot by ID",
+        "operationId": "updateMyChatbotById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "intents": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "63debe9878d39a8cc462f7b9"
+                    },
+                    "example": [
+                      "63debe9878d39a8cc462f7b9",
+                      "63debe9f78d39a8cc462f7bb"
+                    ]
+                  }
+                }
+              },
+              "example": {
+                "intents": [
+                  "63debe9878d39a8cc462f7b9",
+                  "63debe9f78d39a8cc462f7bb"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/chatbots/63d965aa6d00790ea0c0d9c1/compile": {
+      "post": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Compile a chatbot by ID",
+        "description": "Compile a chatbot by ID",
+        "operationId": "compileAChatbotById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/63d965aa6d00790ea0c0d9c1": {
+      "get": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "ADM - Get any chatbot by ID",
+        "description": "ADM - Get any chatbot by ID",
+        "operationId": "admGetAnyChatbotById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/owner/63deb6c1dd6a29bd414e3067": {
+      "get": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "ADM - Get all chatbots from user ID",
+        "description": "ADM - Get all chatbots from user ID",
+        "operationId": "admGetAllChatbotsFromUserId",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/63debede78d39a8cc462f7c2": {
+      "patch": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "ADM - Update anychatbot by ID",
+        "description": "ADM - Update anychatbot by ID",
+        "operationId": "admUpdateAnychatbotById",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "intents": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": "63debe9878d39a8cc462f7b9"
+                    },
+                    "example": [
+                      "63debe9878d39a8cc462f7b9",
+                      "63debe9f78d39a8cc462f7bb"
+                    ]
+                  }
+                }
+              },
+              "example": {
+                "intents": [
+                  "63debe9878d39a8cc462f7b9",
+                  "63debe9f78d39a8cc462f7bb"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/v1/chatbots/63d958cd4e88057d27f1c0cf": {
+      "delete": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "ADM - Delete any chatbot by user ID",
+        "description": "ADM - Delete any chatbot by user ID",
+        "operationId": "admDeleteAnyChatbotByUserId",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Healthcheck",
+        "description": "Healthcheck",
+        "operationId": "healthcheck",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users"
+    },
+    {
+      "name": "Intents"
+    },
+    {
+      "name": "Chatbots"
+    }
+  ]
+}

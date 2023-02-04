@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
 
 const mongoString = process.env.DATABASE_URL;
@@ -20,6 +21,7 @@ const ChatbotRoutes = require('./routes/ChatbotRoutes');
 
 const app = express();
 app.use(express.json());
+app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/v1/users', UserRoutes)
 app.use('/api/v1/intents', IntentRoutes)
 app.use('/api/v1/chatbots', ChatbotRoutes)
