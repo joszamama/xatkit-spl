@@ -15,6 +15,8 @@ UserSchema.methods.cleanup = function() {
       id: this._id,
       username: this.username,
       email: this.email,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt
   }
 }
 

@@ -1,18 +1,17 @@
 const express = require('express');
 const Intent = require('../models/Intent');
 const Chatbot = require('../models/Chatbot');
+const jwt_decode = require('jwt-decode');
 const router = express.Router()
+require('dotenv').config();
+
+ADMIN_ID = process.env.ADMIN_ID;
 
 // Get all intents
 router.get('/', async (req, res) => {
-    if (req.query.ownerId) {
-        try {
-            const data = await Intent.find({owner: req.query.ownerId});
-            res.json(data)
-        } catch (error) {
-            res.status(500).json({message: error.message})
-        }
-    } else {
+    const token = jwt_decode(req.headers.authorization);
+    console.log("HOLA: "+ token.id);
+    if (token.id === ADMIN_ID) {
         try{
             const data = await Intent.find();
             res.json(data)
@@ -20,6 +19,8 @@ router.get('/', async (req, res) => {
         catch(error){
             res.status(500).json({message: error.message})
         }
+    } else {
+        res.status(404).json({message: "You are not authorized to view this page"})
     }
 })
 
