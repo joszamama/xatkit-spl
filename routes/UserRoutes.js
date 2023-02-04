@@ -14,9 +14,10 @@ router.get('/', async (req, res) => {
     if (req.headers.authorization) {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            console.log(verify.id);
             if (verify.id && verify.id === ADMIN_ID) {
                 const data = await User.find();
-                res.json(data.cleanup())
+                res.json(data.map(user => user.cleanup()))
             } else {
                 res.status(404).json({message: "You are not authorized to view this page"});
             }
