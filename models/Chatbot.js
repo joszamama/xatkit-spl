@@ -6,17 +6,18 @@ const ChatbotSchema = new mongoose.Schema({
     description: {type: String, required: [true, "can't be blank"]},
     role: {type: String, enum:["Father", "Son"], ref: 'Role', required: [true, "can't be blank"]},
     intents: {type: [mongoose.Schema.Types.ObjectId], ref: 'Intent'},
-    updated: {type: Boolean, default: false}
+    compiled: {type: Boolean, default: false}
 }, {timestamps: true})
 
 ChatbotSchema.methods.cleanup = function() {
     return {
         id: this._id,
-        name: this.name,
         owner: this.owner,
+        name: this.name,
+        description: this.description,
         role: this.role,
         intents: this.intents,
-        updated: this.updated
+        compiled: this.updated
     }
 }
 
