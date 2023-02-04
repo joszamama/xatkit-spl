@@ -16,14 +16,12 @@ const port = process.env.PORT || 3000;
 const UserRoutes = require('./routes/UserRoutes');
 const IntentRoutes = require('./routes/IntentRoutes');
 const ChatbotRoutes = require('./routes/ChatbotRoutes');
-const NetworkRoutes = require('./routes/NetworkRoutes');
 
 const app = express();
 app.use(express.json());
 app.use('/api/users', UserRoutes)
 app.use('/api/intents', IntentRoutes)
 app.use('/api/chatbots', ChatbotRoutes)
-app.use('/api/networks', NetworkRoutes)
 
 
 app.get('/', (req, res) => {
