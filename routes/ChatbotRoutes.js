@@ -1,5 +1,6 @@
 const express = require('express');
 const jwt = require("jsonwebtoken");
+const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
 const router = express.Router()
@@ -189,6 +190,7 @@ router.patch('/:id', async (req, res) => {
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to update this chatbot"});
+                return;
             }
         } catch (error) {
             res.status(404).json({message: "Token not valid"});
@@ -240,6 +242,7 @@ router.delete('/:id', async (req, res) => {
                     res.json({message: "Chatbot deleted successfully"});
                 } catch (error) {
                     res.status(404).json({message: "Chatbot not found"});
+                    return;
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to delete this chatbot"});
@@ -251,5 +254,44 @@ router.delete('/:id', async (req, res) => {
         res.status(404).json({message: "Token not found"});
     }
 })
+
+// Compile my chatbot by id
+router.post('/mine/:id/compile', async (req, res) => {
+    if (req.headers.authorization) {
+        try {
+            const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
+            if (verify.id) {
+                try {
+                    const chatbot = await Chatbot.findById(req.params.id);
+                    if (chatbot.owner != verify.id) {
+                        res.status(404).json({message: "You can only compile chatbots that you own"});
+                        return;
+                    }
+                    try {
+                        fs.writeFileSync(`./bots/${chatbot.id}.json`, JSON.stringify(chatbot));
+                        chatbot.compiled = true;
+                        const data = await chatbot.save();
+                        res.json({message: "Chatbot compiled successfully"});
+                    } catch (error) {
+                        res.status(404).json({message: "Could not compile chatbot"});
+                        return;
+                    }
+                } catch (error) {
+                    res.status(404).json({message: "Chatbot not found"});
+                }
+            } else {
+                res.status(404).json({message: "You are not authorized to compile this chatbot"});
+            }
+        } catch (error) {
+            res.status(404).json({message: "Token not valid"});
+        }
+    } else {
+        res.status(404).json({message: "Token not found"});
+    }
+})
+
+
+
+
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require("jsonwebtoken");
 const Intent = require('../models/Intent');
+const Chatbot = require('../models/Chatbot');
 const router = express.Router()
 require('dotenv').config();
 
@@ -138,8 +139,21 @@ router.patch('/mine/:id', async (req, res) => {
                     if (req.body.training) {
                         intent.training = req.body.training.split(',').map(item => item.trim());
                     }
-                    const updatedIntent = await intent.save();
-                    res.json(updatedIntent.cleanup());
+                    try{
+                        const updatedIntent = await intent.save();
+                        const chatbots = await Chatbot.find({intents: req.params.id});
+                        if (chatbots) {
+                            // for every chatbot that has this intent, update the .compiled to false
+                            for (let i = 0; i < chatbots.length; i++) {
+                                chatbots[i].compiled = false;
+                                await chatbots[i].save();
+                            }
+                            res.json(updatedIntent.cleanup());
+                            return;
+                        }
+                    } catch (error) {
+                        res.status(404).json({message: "Could not remove cross references for this intent"});
+                    }
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to edit this intent"});
@@ -171,8 +185,21 @@ router.patch('/:id', async (req, res) => {
                     if (req.body.training) {
                         intent.training = req.body.training.split(',').map(item => item.trim());
                     }
-                    const updatedIntent = await intent.save();
-                    res.json(updatedIntent.cleanup());
+                    try{
+                        const updatedIntent = await intent.save();
+                        const chatbots = await Chatbot.find({intents: req.params.id});
+                        if (chatbots) {
+                            // for every chatbot that has this intent, update the .compiled to false
+                            for (let i = 0; i < chatbots.length; i++) {
+                                chatbots[i].compiled = false;
+                                await chatbots[i].save();
+                            }
+                            res.json(updatedIntent.cleanup());
+                            return;
+                        }
+                    } catch (error) {
+                        res.status(404).json({message: "Could not remove cross references for this intent"});
+                    }
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to edit this intent"});
@@ -222,8 +249,9 @@ router.delete('/:id', async (req, res) => {
                 if (!intent) {
                     res.status(404).json({message: "Intent not found"});
                 } else {
-                    await intent.remove();
-                    res.json({message: "Intent deleted"});
+                    const deletedIntent = await Intent.findByIdAndDelete(req.params.id);
+                    const deletedChatbots = await Chatbot.updateMany({intents: req.params.id}, {$pull: {intents: req.params.id}});
+                    res.json(deletedIntent.cleanup());
                 }
             } else {
                 res.status(404).json({message: "You are not authorized to delete this intent"});
