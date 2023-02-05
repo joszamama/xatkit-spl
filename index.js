@@ -5,14 +5,17 @@ const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
 
 const mongoString = process.env.DATABASE_URL;
-mongoose.connect(mongoString);
-const database = mongoose.connection;
-database.on('error', (error) => {
-    console.log('Database Connection Error: ' + error);
-})
-database.once('connected', () => {
-    console.log('Database Connected');
-})
+
+// Conexión con la BBDD
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect(mongoString, () => {
+    console.log('Connected to DB!');
+  }, () => {
+    console.log('Error connecting to DB!');
+  });
+}
 
 const port = process.env.PORT || 3000;
 const UserRoutes = require('./routes/UserRoutes');
@@ -34,3 +37,5 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
+
+module.exports = app;
