@@ -7,8 +7,10 @@ on:
   push:
     branches:
       - "main"
+  workflow_call:
+
 jobs:
-  build:
+  check:
     name: Conventional Commits
     runs-on: ubuntu-latest
     steps:
