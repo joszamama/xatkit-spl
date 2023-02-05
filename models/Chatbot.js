@@ -19,4 +19,12 @@ ChatbotSchema.methods.cleanup = function() {
     }
 }
 
+ChatbotSchema.methods.toChatbot = function() {
+    return {
+        name: this.name,
+        description: this.description,
+    }
+}
+
+
 module.exports = mongoose.model('Chatbot', ChatbotSchema)

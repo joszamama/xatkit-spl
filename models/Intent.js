@@ -17,4 +17,11 @@ IntentSchema.methods.cleanup = function() {
     }
 }
 
+IntentSchema.methods.toChatbot = function() {
+    return {
+        title: this.title,
+        training: this.training
+    }
+}      
+
 module.exports = mongoose.model('Intent', IntentSchema)
