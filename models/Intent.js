@@ -5,6 +5,7 @@ const IntentSchema = new mongoose.Schema({
     title: {type: String, required: [true, "can't be blank"], index: true},
     description: {type: String, required: [true, "can't be blank"]},
     training: {type: [String], required: [true, "can't be blank"]},
+    response: {type: String, required: [true, "can't be blank"]},
 }, {timestamps: true})
 
 IntentSchema.methods.cleanup = function() {
@@ -14,13 +15,15 @@ IntentSchema.methods.cleanup = function() {
         title: this.title,
         description: this.description,
         training: this.training,
+        response: this.responses
     }
 }
 
 IntentSchema.methods.toChatbot = function() {
     return {
         title: this.title,
-        training: this.training
+        training: this.training,
+        response: this.response
     }
 }      
 

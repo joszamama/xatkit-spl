@@ -1,0 +1,7 @@
+     
+        ReactPlatform reactPlatform = new ReactPlatform();
+        ReactEventProvider reactEventProvider = reactPlatform.getReactEventProvider();
+        ReactIntentProvider reactIntentProvider = reactPlatform.getReactIntentProvider();
+
+        val init = state("Init");
+        val awaitingInput = state("AwaitingInput");

@@ -1,0 +1,20 @@
+package com.xatkit.example;
+
+import com.xatkit.core.XatkitBot;
+import com.xatkit.plugins.react.platform.ReactPlatform;
+import com.xatkit.plugins.react.platform.io.ReactEventProvider;
+import com.xatkit.plugins.react.platform.io.ReactIntentProvider;
+import lombok.val;
+import org.apache.commons.configuration2.BaseConfiguration;
+import org.apache.commons.configuration2.Configuration;
+
+import static com.xatkit.dsl.DSL.eventIs;
+import static com.xatkit.dsl.DSL.fallbackState;
+import static com.xatkit.dsl.DSL.intent;
+import static com.xatkit.dsl.DSL.intentIs;
+import static com.xatkit.dsl.DSL.model;
+import static com.xatkit.dsl.DSL.state;
+
+public class NOMBRE_DEL_BOT {
+    
+    public static void main(String[] args) {
