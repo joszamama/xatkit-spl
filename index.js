@@ -4,7 +4,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 require('dotenv').config();
 
-const mongoString = process.env.DATABASE_URL;
+const mongoString = process.env.DATABASE_URL || 'mongodb+srv://test:test@cluster0.asrmhxl.mongodb.net/xatkit-spl-testing';
 
 // Conexión con la BBDD
 main().catch(err => console.log(err));
