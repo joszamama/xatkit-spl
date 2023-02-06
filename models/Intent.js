@@ -15,7 +15,7 @@ IntentSchema.methods.cleanup = function() {
         title: this.title,
         description: this.description,
         training: this.training,
-        response: this.responses
+        response: this.response
     }
 }
 

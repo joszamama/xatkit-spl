@@ -132,6 +132,7 @@ router.post('/', async (req, res) => {
                     title: req.body.title,
                     description: req.body.description,
                     training: training,
+                    response: req.body.response
                 })
                 const newIntent = await intent.save();
                 res.status(201).json(newIntent.cleanup());
@@ -166,6 +167,9 @@ router.patch('/mine/:id', async (req, res) => {
                     }
                     if (req.body.training) {
                         intent.training = req.body.training.split(',').map(item => item.trim());
+                    }
+                    if (req.body.response) {
+                        intent.response = req.body.response;
                     }
                     try{
                         const updatedIntent = await intent.save();
@@ -212,6 +216,9 @@ router.patch('/:id', async (req, res) => {
                     }
                     if (req.body.training) {
                         intent.training = req.body.training.split(',').map(item => item.trim());
+                    }
+                    if (req.body.response) {
+                        intent.response = req.body.response;
                     }
                     try{
                         const updatedIntent = await intent.save();
