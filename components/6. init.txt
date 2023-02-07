@@ -1,7 +1,0 @@
-
-        init
-                .next()
-                .when(eventIs(ReactEventProvider.ClientReady)).moveTo(awaitingInput);
-        
-        awaitingInput
-                .next()

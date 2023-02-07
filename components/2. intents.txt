@@ -1,1 +1,0 @@
-        val NOMBRE_DEL_INTENT = intent("NOMBRE_DEL_INTENT")

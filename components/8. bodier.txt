@@ -1,5 +1,0 @@
-
-        handleNOMBRE_DEL_INTENT
-                .body(context -> reactPlatform.reply(context, "RESPUESTA_AL_INTENT"))
-                .next()
-                .moveTo(awaitingInput);
