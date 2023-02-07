@@ -60,14 +60,14 @@ First, you will need to install [NPM](https://nodejs.org/en/download/), a [Mongo
 
 2. Install the NPM requisites:
   ```sh
-  cd xatkit-spl-backend
-  npm install
+  $ cd xatkit-spl-backend
+  $ npm install
   ```
 3. Update the .env file providing the different values shown in .env.example
 
 4. Run the app:
   ```sh
-  npm start
+  $ npm start
   ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
