@@ -69,6 +69,8 @@ First, you will need to install [NPM](https://nodejs.org/en/download/), a [Mongo
   ```sh
   $ npm start
   ```
+  
+Then, you can access all the endpoints through an application like [Postman](https://www.postman.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
