@@ -189,7 +189,8 @@ router.post('/', async (req, res) => {
                     name: req.body.name,
                     description: req.body.description,
                     intents: req.body.intents,
-                    owner: verify.id
+                    owner: verify.id,
+                    fallback: req.body.fallback
                 });
                 const data = await chatbot.save();
                 res.json(data.cleanup());
@@ -230,6 +231,7 @@ router.patch('/mine/:id', async (req, res) => {
                 if (req.body.name) chatbot.name = req.body.name;
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
+                if (req.body.fallback) chatbot.fallback = req.body.fallback;
                 chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();
@@ -258,6 +260,7 @@ router.patch('/:id', async (req, res) => {
                 if (req.body.name) chatbot.name = req.body.name;
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
+                if (req.body.fallback) chatbot.fallback = req.body.fallback;
                 chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();
@@ -349,7 +352,11 @@ router.post('/mine/:id/compile', async (req, res) => {
                         return;
                     }
                     try {
-                        fs.writeFileSync(`./bots/${chatbot.id}.json`, JSON.stringify(chatbot));
+                        const chatbotInfo = chatbot.toChatbot();
+                        const intents = await Intent.find({_id: {$in: chatbot.intents}});
+                        const intentInfo = intents.map(intent => intent.toChatbot());
+                        chatbotInfo.intents = intentInfo;
+                        fs.writeFileSync(`./bots/${chatbot.id}.txt`, JSON.stringify(chatbotInfo));
                         chatbot.compiled = true;
                         const data = await chatbot.save();
                         res.json({message: "Chatbot compiled successfully"});
