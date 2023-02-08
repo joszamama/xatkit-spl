@@ -356,7 +356,11 @@ router.post('/mine/:id/compile', async (req, res) => {
                         const intents = await Intent.find({_id: {$in: chatbot.intents}});
                         const intentInfo = intents.map(intent => intent.toChatbot());
                         chatbotInfo.intents = intentInfo;
-                        fs.writeFileSync(`./bots/${chatbot.id}.json`, JSON.stringify(chatbotInfo));
+                        if (!fs.existsSync(`./bots/${chatbot.id}`)) {
+                            fs.mkdirSync(`./bots/${chatbot.id}`);
+                        }
+                        fs.copyFileSync('./bots/Dockerfile', `./bots/${chatbot.id}/Dockerfile`);
+                        fs.writeFileSync(`./bots/${chatbot.id}/${chatbot.id}.txt`, JSON.stringify(chatbotInfo));
                         chatbot.compiled = true;
                         const data = await chatbot.save();
                         res.json({message: "Chatbot compiled successfully"});
