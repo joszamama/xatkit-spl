@@ -26,7 +26,8 @@ WORKDIR /app/xatkit-main/xatkit-spl-parser
 RUN mkdir -p /app/xatkit-main/xatkit-spl-parser/src/bots/${CHATBOT_NAME}
 RUN echo ${CHATBOT_DEFINITION} > /app/xatkit-main/xatkit-spl-parser/src/bots/${CHATBOT_NAME}/${CHATBOT_NAME}.json
 RUN mvn clean compile
-RUN mvn exec:java -e -Dexec.mainClass="com.xatkit.spl.parser.XatkitParser" -Dexec.args="./app/xatkit-main/xatkit-spl-parser/src/bots/${CHATBOT_NAME}/${CHATBOT_NAME}"
+RUN mvn exec:java -e -Dexec.mainClass="com.xatkit.spl.parser.XatkitParser" -Dexec.args="/app/xatkit-main/xatkit-spl-parser/src/bots/${CHATBOT_NAME}/${CHATBOT_NAME}"
+RUN cp -r /app/xatkit-main/xatkit-spl-parser/src/bots/${CHATBOT_NAME}/${CHATBOT_NAME}.java /app/xatkit-main/xatkit-examples/GreetingsBots/GreetingsBot/src/main/java/com/xatkit/example
 
 # Set the working directory to the example project
 WORKDIR /app/xatkit-main/xatkit-examples/GreetingsBots/GreetingsBot
