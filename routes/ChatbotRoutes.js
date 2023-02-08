@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
+const { Console } = require('console');
 const router = express.Router()
 require('dotenv').config();
 
@@ -216,16 +217,18 @@ router.patch('/mine/:id', async (req, res) => {
                     res.status(404).json({message: "You can only update chatbots that you own"});
                     return;
                 }
-                for (let i = 0; i < req.body.intents.length; i++) {
-                    try{
-                        const intent = await Intent.findById(req.body.intents[i]);
-                        if (intent.owner != verify.id) {
-                            res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                if (req.body.intents) {
+                    for (let i = 0; i < req.body.intents.length; i++) {
+                        try{
+                            const intent = await Intent.findById(req.body.intents[i]);
+                            if (intent.owner != verify.id) {
+                                res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                                return;
+                            }
+                        } catch {
+                            res.status(404).json({message: "Intent not found"});
                             return;
                         }
-                    } catch {
-                        res.status(404).json({message: "Intent not found"});
-                        return;
                     }
                 }
                 if (req.body.name) chatbot.name = req.body.name;
@@ -360,7 +363,20 @@ router.post('/mine/:id/compile', async (req, res) => {
                             fs.mkdirSync(`./bots/${chatbot.id}`);
                         }
                         fs.copyFileSync('./bots/Dockerfile', `./bots/${chatbot.id}/Dockerfile`);
-                        fs.writeFileSync(`./bots/${chatbot.id}/${chatbot.id}.txt`, JSON.stringify(chatbotInfo));
+                        fs.readFile(`./bots/${chatbot.id}/Dockerfile`, 'utf-8', (err, data) => {
+                            if (err) throw err;
+                          
+                            // replace the contents
+                            let newData = data.replace(/CHANGE_NAME/g, chatbot.name);
+
+                            let newNewData = newData.replace(/CHANGE_DEF/g, JSON.stringify(chatbotInfo));
+                          
+                            // write the file
+                            fs.writeFile(`./bots/${chatbot.id}/Dockerfile`, newNewData, 'utf-8', (err) => {
+                              if (err) throw err;
+                              console.log('File contents updated!');
+                            });
+                          });
                         chatbot.compiled = true;
                         const data = await chatbot.save();
                         res.json({message: "Chatbot compiled successfully"});
