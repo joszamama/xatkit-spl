@@ -9,9 +9,9 @@
   <p align="center">
     A new and easy way to generate product-line-based chatbots
     <br />
-    <a href="https://github.com/diverso-lab/xatkit-spl-backend/issues">Report Bug</a>
+    <a href="https://github.com/joszamama/xatkit-spl-backend/issues">Report Bug</a>
     ·
-    <a href="https://github.com/diverso-lab/xatkit-spl-backend/issues">Request Feature</a>
+    <a href="https://github.com/joszamama/xatkit-spl-backend/issues">Request Feature</a>
   </p>
 </div>
 
