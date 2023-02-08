@@ -1,5 +1,3 @@
-# Xatkit-SPL Backend Repository
-
 <div id="top"></div>
 <br />
 <div align="center">
