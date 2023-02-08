@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
+const { Console } = require('console');
 const router = express.Router()
 require('dotenv').config();
 
@@ -216,16 +217,18 @@ router.patch('/mine/:id', async (req, res) => {
                     res.status(404).json({message: "You can only update chatbots that you own"});
                     return;
                 }
-                for (let i = 0; i < req.body.intents.length; i++) {
-                    try{
-                        const intent = await Intent.findById(req.body.intents[i]);
-                        if (intent.owner != verify.id) {
-                            res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                if (req.body.intents) {
+                    for (let i = 0; i < req.body.intents.length; i++) {
+                        try{
+                            const intent = await Intent.findById(req.body.intents[i]);
+                            if (intent.owner != verify.id) {
+                                res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                                return;
+                            }
+                        } catch {
+                            res.status(404).json({message: "Intent not found"});
                             return;
                         }
-                    } catch {
-                        res.status(404).json({message: "Intent not found"});
-                        return;
                     }
                 }
                 if (req.body.name) chatbot.name = req.body.name;
