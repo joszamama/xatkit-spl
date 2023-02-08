@@ -359,7 +359,6 @@ router.post('/mine/:id/compile', async (req, res) => {
                         if (!fs.existsSync(`./bots/${chatbot.id}`)) {
                             fs.mkdirSync(`./bots/${chatbot.id}`);
                         }
-                        // Copy file ./bots/Dockerfile to ./bots/${chatbot.id}/Dockerfile
                         fs.copyFileSync('./bots/Dockerfile', `./bots/${chatbot.id}/Dockerfile`);
                         fs.writeFileSync(`./bots/${chatbot.id}/${chatbot.id}.txt`, JSON.stringify(chatbotInfo));
                         chatbot.compiled = true;
