@@ -74,6 +74,23 @@ Then, you can access all the endpoints through an application like [Postman](htt
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### Deploying a Chatbot
+
+Once the PL -> Intent -> Chatbot process has been completed with this tool, you will have access to a Dockerfile. For running your new chatbot, you will need to execute the following commands, having [Docker](https://docs.docker.com/desktop/) previously installed.
+
+1. Build the bot image:
+  ```sh
+  $ docker build -t the_name_you_want_to_give_this_image . 
+  ```
+2. Run the chatbot:
+  ```sh
+  $ docker run -t -i -p 5000:5000 -p 5001:5001 the_name_you_gave_before 
+  ```
+ 
+Now you can access http://localhost:5000/admin and start chatting!
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- CONTRIBUTING -->
 ## Contributing
 
