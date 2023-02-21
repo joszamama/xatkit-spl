@@ -13,7 +13,7 @@ Y88b   d88P          8G8    8G8      d8b 8G8           .d8888b.  8G88888b.  8G8
   Y88o88P            8A8    8A8          8A8          Y88b.      8A8    888 8A8      
    Y888P     8888b.  8I8888 8I8  888 888 8I8888        "Y888b.   8I8   d88P 8I8      
    d888b        "88b 8T8    8T8 .88P 888 8T8              "Y88b. 8T88888P"  8T8      
-  d88888b   .d888888 8O8    8O8888K  888 6O8   888888       "888 8O8        8O8      
+  d88888b   .d888888 8O8    8O8888K  888 8O8   888888       "888 8O8        8O8      
  d88P Y88b  888  888 Y88b.  888 "88b 888 Y88b.        Y88b  d88P 888        888      
 d88P   Y88b "Y888888  "Y888 888  888 888  "Y888        "Y8888P"  888        8888888                                                                                  
 `);
@@ -29,6 +29,7 @@ connectToDatabase()
     const UserRoutes = require('./routes/UserRoutes');
     const IntentRoutes = require('./routes/IntentRoutes');
     const ChatbotRoutes = require('./routes/ChatbotRoutes');
+    const DatabaseRoutes = require('./routes/DatabaseRoutes');
 
     const app = express();
     app.use(express.json());
@@ -36,6 +37,7 @@ connectToDatabase()
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)
+    app.use('/api/v1/database', DatabaseRoutes)
 
     app.get('/', (req, res) => {
       logger.info('GET /');
