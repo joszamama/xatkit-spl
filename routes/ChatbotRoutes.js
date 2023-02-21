@@ -379,7 +379,7 @@ router.post('/mine/:id/compile', async (req, res) => {
                           });
                         chatbot.compiled = true;
                         const data = await chatbot.save();
-                        res.json({message: "Chatbot compiled successfully"});
+                        res.download(`./bots/${chatbot.id}/Dockerfile`);
                     } catch (error) {
                         res.status(404).json({message: "Could not compile chatbot"});
                         return;
