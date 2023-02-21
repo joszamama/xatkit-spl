@@ -18,13 +18,13 @@ router.get('/', async (req, res) => {
                 const data = await User.find();
                 res.json(data.map(user => user.cleanup()))
             } else {
-                res.status(404).json({message: "You are not authorized to view this page"});
+                res.status(404).json({ message: "You are not authorized to view this page" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -37,13 +37,13 @@ router.get('/me', async (req, res) => {
                 const data = await User.findById(verify.id);
                 res.json(data.cleanup())
             } else {
-                res.status(404).json({message: "No user found"});
+                res.status(404).json({ message: "No user found" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -56,13 +56,13 @@ router.get('/:id', async (req, res) => {
                 const data = await User.findById(req.params.id);
                 res.json(data.cleanup())
             } else {
-                res.status(404).json({message: "You are not authorized to view this page"});
+                res.status(404).json({ message: "You are not authorized to view this page" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -78,9 +78,9 @@ router.post('/', async (req, res) => {
         res.status(200).json(dataToSave.cleanup())
     }
     catch (error) {
-        res.status(400).json({message: error.message})
+        res.status(400).json({ message: error.message })
     }
-})                  
+})
 
 // Update user /me
 router.patch('/me', async (req, res) => {
@@ -102,16 +102,16 @@ router.patch('/me', async (req, res) => {
                     const updatedUser = await user.save();
                     res.status(200).json(updatedUser);
                 } catch (error) {
-                    res.status(404).json({message: "User not found"});
-                }        
+                    res.status(404).json({ message: "User not found" });
+                }
             } else {
-                res.status(404).json({message: "You are not authorized to edit this user"});
+                res.status(404).json({ message: "You are not authorized to edit this user" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -124,9 +124,9 @@ router.patch('/:id', async (req, res) => {
                 try {
                     const user = await User.findById(req.params.id);
                     if (!user) {
-                        res.status(404).json({message: "User not found"});
+                        res.status(404).json({ message: "User not found" });
                     } else if (user.id === ADMIN_ID) {
-                        res.status(404).json({message: "Administator cannot be edited"});
+                        res.status(404).json({ message: "Administator cannot be edited" });
                     } else {
                         if (req.body.username) {
                             user.username = req.body.username;
@@ -141,16 +141,16 @@ router.patch('/:id', async (req, res) => {
                         res.status(200).json(updatedUser);
                     }
                 } catch (error) {
-                    res.status(404).json({message: "User not found"});
+                    res.status(404).json({ message: "User not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to edit this user"});
+                res.status(404).json({ message: "You are not authorized to edit this user" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -163,18 +163,18 @@ router.delete('/me', async (req, res) => {
                 try {
                     const user = await User.findById(verify.id);
                     await user.remove();
-                    res.status(200).json({message: "User deleted"});
+                    res.status(200).json({ message: "User deleted" });
                 } catch (error) {
-                    res.status(404).json({message: "User not found"});
+                    res.status(404).json({ message: "User not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to delete this user"});
+                res.status(404).json({ message: "You are not authorized to delete this user" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -187,24 +187,24 @@ router.delete('/:id', async (req, res) => {
                 try {
                     const user = await User.findById(req.params.id);
                     if (!user) {
-                        return res.status(404).json({message: "User not found"});
+                        return res.status(404).json({ message: "User not found" });
                     } else if (user._id === ADMIN_ID) {
-                        return res.status(404).json({message: "You cannot delete the admin user"});
+                        return res.status(404).json({ message: "You cannot delete the admin user" });
                     } else {
                         await user.remove();
-                        res.status(200).json({message: "User deleted"});
+                        res.status(200).json({ message: "User deleted" });
                     }
                 } catch (error) {
-                    res.status(404).json({message: "User not found"});
+                    res.status(404).json({ message: "User not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to delete this user"});
+                res.status(404).json({ message: "You are not authorized to delete this user" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -214,15 +214,15 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ error: 'Username and password are required' });
     } else {
         try {
-            const user = await User.findOne ({ username: req.body.username });
+            const user = await User.findOne({ username: req.body.username });
             if (user) {
                 const validPassword = await bcrypt.compare(req.body.password, user.password);
                 if (validPassword) {
                     const payload = user.cleanup();
                     const accessToken = generateAccessToken(payload, JWT_SECRET);
                     res.status(200).send({
-                      message: "User authenticated",
-                      accessToken,
+                        message: "User authenticated",
+                        accessToken,
                     });
                 } else {
                     res.status(400).json({ message: 'Invalid password' });

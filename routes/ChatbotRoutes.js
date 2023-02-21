@@ -19,13 +19,13 @@ router.get('/', async (req, res) => {
                 const data = await Chatbot.find();
                 res.json(data.map(chatbot => chatbot.cleanup()))
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -35,16 +35,16 @@ router.get('/mine', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
-                const data = await Chatbot.find({owner: verify.id});
+                const data = await Chatbot.find({ owner: verify.id });
                 res.json(data.map(chatbot => chatbot.cleanup()))
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -61,13 +61,13 @@ router.get('/:id', async (req, res) => {
                     res.json(data)
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -77,18 +77,18 @@ router.get('/owner/:id', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id && verify.id === ADMIN_ID) {
-                const data = await Chatbot.find({owner: req.params.id});
+                const data = await Chatbot.find({ owner: req.params.id });
                 res.json(data.map(chatbot => chatbot.cleanup()))
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
-})              
+})
 
 // Get my chatbot by ID
 router.get('/mine/:id', async (req, res) => {
@@ -101,20 +101,20 @@ router.get('/mine/:id', async (req, res) => {
                     if (data.owner == verify.id) {
                         res.json(data.cleanup())
                     } else {
-                        res.status(404).json({message: "You are not authorized to view this chatbot"});
+                        res.status(404).json({ message: "You are not authorized to view this chatbot" });
                     }
                 }
                 catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -124,22 +124,22 @@ router.get('/status/mine', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
-                const data = await Chatbot.find({owner: verify.id});
+                const data = await Chatbot.find({ owner: verify.id });
                 try {
                     const compiled = data.filter(chatbot => chatbot.compiled);
                     const notCompiled = data.filter(chatbot => !chatbot.compiled);
-                    res.json({compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup())})
+                    res.json({ compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup()) })
                 } catch (error) {
-                    res.json({compiled: [], notCompiled: []})
+                    res.json({ compiled: [], notCompiled: [] })
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -153,18 +153,18 @@ router.get('/all/status', async (req, res) => {
                     const data = await Chatbot.find();
                     const compiled = data.filter(chatbot => chatbot.compiled);
                     const notCompiled = data.filter(chatbot => !chatbot.compiled);
-                    res.json({compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup())})
+                    res.json({ compiled: compiled.map(chatbot => chatbot.cleanup()), notCompiled: notCompiled.map(chatbot => chatbot.cleanup()) })
                 } catch (error) {
-                    res.json({compiled: [], notCompiled: []})
+                    res.json({ compiled: [], notCompiled: [] })
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to view this chatbot"});
+                res.status(404).json({ message: "You are not authorized to view this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -175,14 +175,14 @@ router.post('/', async (req, res) => {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
                 for (let i = 0; i < req.body.intents.length; i++) {
-                    try{
+                    try {
                         const intent = await Intent.findById(req.body.intents[i]);
                         if (intent.owner != verify.id) {
-                            res.status(404).json({message: "You can only create chatbots with intents that you own"});
+                            res.status(404).json({ message: "You can only create chatbots with intents that you own" });
                             return;
                         }
                     } catch {
-                        res.status(404).json({message: "Intent not found"});
+                        res.status(404).json({ message: "Intent not found" });
                         return;
                     }
                 }
@@ -196,15 +196,15 @@ router.post('/', async (req, res) => {
                 const data = await chatbot.save();
                 res.json(data.cleanup());
             } else {
-                res.status(404).json({message: "You are not authorized to create this chatbot"});
+                res.status(404).json({ message: "You are not authorized to create this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
-})                  
+})
 
 // Update my chatbot by ID
 router.patch('/mine/:id', async (req, res) => {
@@ -214,19 +214,19 @@ router.patch('/mine/:id', async (req, res) => {
             if (verify.id) {
                 const chatbot = await Chatbot.findById(req.params.id);
                 if (chatbot.owner != verify.id) {
-                    res.status(404).json({message: "You can only update chatbots that you own"});
+                    res.status(404).json({ message: "You can only update chatbots that you own" });
                     return;
                 }
                 if (req.body.intents) {
                     for (let i = 0; i < req.body.intents.length; i++) {
-                        try{
+                        try {
                             const intent = await Intent.findById(req.body.intents[i]);
                             if (intent.owner != verify.id) {
-                                res.status(404).json({message: "You can only update chatbots with intents that you own"});
+                                res.status(404).json({ message: "You can only update chatbots with intents that you own" });
                                 return;
                             }
                         } catch {
-                            res.status(404).json({message: "Intent not found"});
+                            res.status(404).json({ message: "Intent not found" });
                             return;
                         }
                     }
@@ -240,16 +240,16 @@ router.patch('/mine/:id', async (req, res) => {
                     const data = await chatbot.save();
                     res.json(data.cleanup());
                 } catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to update this chatbot"});
+                res.status(404).json({ message: "You are not authorized to update this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -269,17 +269,17 @@ router.patch('/:id', async (req, res) => {
                     const data = await chatbot.save();
                     res.json(data.cleanup());
                 } catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to update this chatbot"});
+                res.status(404).json({ message: "You are not authorized to update this chatbot" });
                 return;
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -292,25 +292,25 @@ router.delete('/mine/:id', async (req, res) => {
                 try {
                     const data = await Chatbot.findById(req.params.id);
                     if (data.owner != verify.id) {
-                        res.status(404).json({message: "You can only delete chatbots that you own"});
+                        res.status(404).json({ message: "You can only delete chatbots that you own" });
                         return;
                     }
-                    await Chatbot.deleteOne({_id: req.params.id});
+                    await Chatbot.deleteOne({ _id: req.params.id });
                     if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
                         fs.unlink(`./bots/${data._id.toString()}.json`);
                     }
-                    res.json({message: "Chatbot deleted"});
+                    res.json({ message: "Chatbot deleted" });
                 } catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to delete this chatbot"});
+                res.status(404).json({ message: "You are not authorized to delete this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -322,23 +322,23 @@ router.delete('/:id', async (req, res) => {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id && verify.id === ADMIN_ID) {
                 try {
-                    await Chatbot.deleteOne({_id: req.params.id});
+                    await Chatbot.deleteOne({ _id: req.params.id });
                     if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
                         fs.unlink(`./bots/${data._id.toString()}.json`);
                     }
-                    res.json({message: "Chatbot deleted"});
+                    res.json({ message: "Chatbot deleted" });
                 } catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                     return;
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to delete this chatbot"});
+                res.status(404).json({ message: "You are not authorized to delete this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
@@ -351,12 +351,12 @@ router.post('/mine/:id/compile', async (req, res) => {
                 try {
                     const chatbot = await Chatbot.findById(req.params.id);
                     if (chatbot.owner != verify.id) {
-                        res.status(404).json({message: "You can only compile chatbots that you own"});
+                        res.status(404).json({ message: "You can only compile chatbots that you own" });
                         return;
                     }
                     try {
                         const chatbotInfo = chatbot.toChatbot();
-                        const intents = await Intent.find({_id: {$in: chatbot.intents}});
+                        const intents = await Intent.find({ _id: { $in: chatbot.intents } });
                         const intentInfo = intents.map(intent => intent.toChatbot());
                         chatbotInfo.intents = intentInfo;
                         if (!fs.existsSync(`./bots/${chatbot.id}`)) {
@@ -365,36 +365,35 @@ router.post('/mine/:id/compile', async (req, res) => {
                         fs.copyFileSync('./bots/Dockerfile', `./bots/${chatbot.id}/Dockerfile`);
                         fs.readFile(`./bots/${chatbot.id}/Dockerfile`, 'utf-8', (err, data) => {
                             if (err) throw err;
-                          
+
                             // replace the contents
                             let newData = data.replace(/CHANGE_NAME/g, chatbot.name);
 
                             let newNewData = newData.replace(/CHANGE_DEF/g, JSON.stringify(chatbotInfo));
-                          
+
                             // write the file
                             fs.writeFile(`./bots/${chatbot.id}/Dockerfile`, newNewData, 'utf-8', (err) => {
-                              if (err) throw err;
-                              console.log('File contents updated!');
+                                if (err) throw err;
                             });
-                          });
+                        });
                         chatbot.compiled = true;
                         const data = await chatbot.save();
                         res.download(`./bots/${chatbot.id}/Dockerfile`);
                     } catch (error) {
-                        res.status(404).json({message: "Could not compile chatbot"});
+                        res.status(404).json({ message: "Could not compile chatbot" });
                         return;
                     }
                 } catch (error) {
-                    res.status(404).json({message: "Chatbot not found"});
+                    res.status(404).json({ message: "Chatbot not found" });
                 }
             } else {
-                res.status(404).json({message: "You are not authorized to compile this chatbot"});
+                res.status(404).json({ message: "You are not authorized to compile this chatbot" });
             }
         } catch (error) {
-            res.status(404).json({message: "Token not valid"});
+            res.status(404).json({ message: "Token not valid" });
         }
     } else {
-        res.status(404).json({message: "Token not found"});
+        res.status(404).json({ message: "Token not found" });
     }
 })
 
