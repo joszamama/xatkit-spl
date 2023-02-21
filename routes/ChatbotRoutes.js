@@ -374,7 +374,6 @@ router.post('/mine/:id/compile', async (req, res) => {
                             // write the file
                             fs.writeFile(`./bots/${chatbot.id}/Dockerfile`, newNewData, 'utf-8', (err) => {
                                 if (err) throw err;
-                                console.log('File contents updated!');
                             });
                         });
                         chatbot.compiled = true;
