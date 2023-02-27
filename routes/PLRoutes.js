@@ -35,13 +35,13 @@ router.post('/', upload.single('file'), async (req, res) => {
                             }
                         });
                         if (response.ok) {
-                            const definition = "flama/fm/" + req.file.filename;
+                            const location = "./flama/fm/" + req.file.filename;
                             const pl = new PL({
                                 title: req.body.title,
                                 owner: decoded.id,
                                 description: req.body.description,
                                 mode: req.body.mode,
-                                definition: definition
+                                location: location
                             });
                             const newPL = await pl.save();
                             res.status(201).json(newPL);
@@ -108,7 +108,7 @@ router.get('/mine/:id', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         try {
             const pl = await PL.findById(req.params.id);
-            if (pl.owner === decoded.id) {
+            if (pl.owner.toString() === decoded.id) {
                 res.json(pl);
             } else {
                 res.status(401).json({ message: "Unauthorized" });
@@ -161,6 +161,27 @@ router.get('/owner/:id', async (req, res) => {
     }
 })
 
+// Delete my PL by ID
+router.delete('/mine/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        try {
+            const pl = await PL.findById(req.params.id);
+            if (pl.owner.toString() === decoded.id) {
+                fs.unlinkSync(pl.location);
+                await pl.remove();
+                res.json({ message: "PL deleted" });
+            } else {
+                res.status(401).json({ message: "Unauthorized" });
+            }
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    } else {
+        res.status(401).json({ message: "No token provided" });
+    }
+})
 
 
 module.exports = router;

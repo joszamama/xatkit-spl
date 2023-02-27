@@ -5,7 +5,7 @@ const PLSchema = new mongoose.Schema({
     title: { type: String, validate: [/^\S*$/, 'Title cannot contain spaces'], required: [true, "can't be blank"], index: true },
     description: { type: String, required: [true, "can't be blank"] },
     mode: { type: String, enum: ['LeafOnly', 'LeafAndBranch'], default: "LeafOnly", required: [true, "can't be blank"] },
-    definition: { type: String, required: [true, "can't be blank"] },
+    location: { type: String, required: [true, "can't be blank"] },
 }, { timestamps: true })
 
 PLSchema.methods.cleanup = function () {
@@ -15,7 +15,7 @@ PLSchema.methods.cleanup = function () {
         title: this.title,
         description: this.description,
         mode: this.mode,
-        definition: this.definition,
+        location: this.location,
     }
 }
 
