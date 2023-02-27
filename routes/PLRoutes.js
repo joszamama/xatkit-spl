@@ -15,7 +15,7 @@ router.post('/', upload.single('file'), async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (req.file !== undefined) {
             try {
-                const definition = "flama/fm/" + req.body.title + ".uvl";
+                const definition = "flama/fm/" + req.file.filename;
                 const pl = new PL({
                     title: req.body.title,
                     owner: decoded.id,

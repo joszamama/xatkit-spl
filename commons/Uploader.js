@@ -14,10 +14,7 @@ const storage = multer.diskStorage({
 const fileFilter = function (req, file, cb) {
   // check if the file ends with .uvl
   if (!file.originalname.match(/\.uvl$/)) {
-    console.log('File must be a .uvl file');
-    cb(new Error('File must be a .uvl file'), false);
-  } else if (req.body.title.includes(' ')) {
-    cb(new Error('Title must not contain spaces'), false);
+    return cb(null, false, 'File must be a .uvl file');
   } else {
     cb(null, true);
   }
