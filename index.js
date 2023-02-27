@@ -30,6 +30,7 @@ connectToDatabase()
     const IntentRoutes = require('./routes/IntentRoutes');
     const ChatbotRoutes = require('./routes/ChatbotRoutes');
     const DatabaseRoutes = require('./routes/DatabaseRoutes');
+    const PLRoutes = require('./routes/PLRoutes');
 
     const app = express();
     app.use(express.json());
@@ -37,6 +38,7 @@ connectToDatabase()
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)
+    app.use('/api/v1/pl', PLRoutes)
     app.use('/api/v1/database', DatabaseRoutes)
 
     app.get('/', (req, res) => {
