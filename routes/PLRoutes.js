@@ -183,5 +183,27 @@ router.delete('/mine/:id', async (req, res) => {
     }
 })
 
+// Delete any PL by ID (ADMIN ONLY)
+router.delete('/:id', async (req, res) => {
+    if (req.headers.authorization) {
+        const token = req.headers.authorization.split(' ')[1]; 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        if (decoded.id === ADMIN_ID) {
+            try {
+                const pl = await PL.findById(req.params.id);
+                fs.unlinkSync(pl.location);
+                await pl.remove();
+                res.json({ message: "PL deleted" });
+            } catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+        }
+    } else {
+        res.status(401).json({ message: "No token provided" });
+    }
+})
+
 
 module.exports = router;
