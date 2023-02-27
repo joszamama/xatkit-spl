@@ -13,22 +13,23 @@ router.post('/', upload.single('file'), async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        try {
-            const definition = "flama/fm/" + req.body.title + ".uvl";
-            console.log(definition);
-            const pl = new PL({
-                owner: decoded.id,
-                title: req.body.title,
-                description: req.body.description,
-                mode: req.body.mode,
-                definition: definition,
-            })
-            await pl.save();
-            res.status(201).json(pl);
-        } catch (err) {
-            res.status(500).send({
-                message: "Could not upload the file",
-            });
+        if (req.file !== undefined) {
+            try {
+                const definition = "flama/fm/" + req.body.title + ".uvl";
+                const pl = new PL({
+                    title: req.body.title,
+                    owner: decoded.id,
+                    description: req.body.description,
+                    mode: req.body.mode,
+                    definition: definition
+                });
+                const newPL = await pl.save();
+                res.status(201).json(newPL);
+            } catch (err) {
+                res.status(400).json({ message: err.message });
+            }
+        } else {
+            res.status(400).json({ message: "Wrong file definition" });
         }
     } else {
         res.status(401).json({ message: "No token provided" });
