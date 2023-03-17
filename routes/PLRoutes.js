@@ -26,14 +26,15 @@ router.post('/', upload.single('file'), async (req, res) => {
                             return res.status(500).json({ message: 'Error reading file' });
                         }
                         const formData = new FormData();
-                        formData.append('file', data, { filename: req.file.originalname });
-                        const response = await fetch(FLAMA_API_URL + "/check/model", {
+                        formData.append('model', data, { filename: req.file.originalname });
+                        const response = await fetch(FLAMA_API_URL + "/validate/model", {
                             method: 'POST',
                             body: formData,
                             headers: {
                                 'Authorization': `Bearer ${token}`
                             }
                         });
+                        console.log(response);
                         if (response.ok) {
                             const location = "./flama/fm/" + req.file.filename;
                             const pl = new PL({
