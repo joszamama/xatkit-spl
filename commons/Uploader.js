@@ -13,8 +13,8 @@ const storage = multer.diskStorage({
 // Define file filter function
 const fileFilter = function (req, file, cb) {
   // check if the file ends with .uvl
-  if (!file.originalname.match(/\.(uvl|txt)$/)) {
-    return cb(null, false, 'File must be a .uvl file');
+  if (!file.originalname.match(/\.(uvl|json)$/)) {
+    return cb(null, false, 'File must be a .uvl or .json file');
   } else {
     cb(null, true);
   }

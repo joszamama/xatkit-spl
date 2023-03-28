@@ -1,0 +1,5 @@
+TakeAway: info about different ordering methods, [¿Qué metodos de takeaway existen?; ¿Como funciona el takeaway?], [El takeaway está operativo de 12am a 12pm por GuaitoEats]
+EatIn: info about ordering in the restaurant, [¿Hay que llevar mascarilla?], [No hace falta]
+Menu: info about the menu, [¿Qué hay en la carta?; ¿Que puedo comer?], [En la carta hay .. por .. y .. por ...]
+Lounge: info about lounge bar, [¿A qué hora abre el lounge?], [A las 12pm]
+Terrace: info about outdoor terrace, [¿A qué hora abre el terrace?], [Esta abierto 24/7]

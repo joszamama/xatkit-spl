@@ -138,6 +138,27 @@ router.post('/', Uploader, async (req, res) => {
                                     });
                                     pl.save();
 
+                                    // create a new folder with the id inside ./lines
+                                    const dir = './lines/' + pl._id;
+                                    if (!fs.existsSync(dir)) {
+                                        fs.mkdirSync(dir);
+                                    }
+
+                                    // move model and intents to the new folder
+                                    fs.rename(model.path, dir + '/' + model.originalname, (err) => {
+                                        if (err) {
+                                            console.error(err);
+                                            return res.status(500).json({ message: 'Error moving file' });
+                                        }
+                                    });
+
+                                    fs.rename(intents.path, dir + '/' + intents.originalname, (err) => {
+                                        if (err) {
+                                            console.error(err);
+                                            return res.status(500).json({ message: 'Error moving file' });
+                                        }
+                                    });
+
                                     res.status(201).json({ message: "Line created" });
                                 }
                             } catch (err) {
