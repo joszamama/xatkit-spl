@@ -4,7 +4,8 @@
   "description": "API for Chatbot Definition, Creation & Deployment",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --quiet index.js",
+    "start": "node index.js",
+    "dev": "nodemon --ignore lines/**/*.json --quiet index.js",
     "test": "jest --detectOpenHandles --runInBand"
   },
   "repository": "github:joszamama/xatkit-spl-backend",

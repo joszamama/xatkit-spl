@@ -55,33 +55,29 @@ router.post('/', Uploader, async (req, res) => {
                                 });
                                 if (response.ok) {
                                     const result = await response.json();
-                                    // read file from intents.path
-                                    const fileContent = fs.readFileSync(intents.path, 'utf-8');
-                                    // Split the file content into lines
-                                    const lines = fileContent.trim().split('\n');
+                                    const place = "../" + intents.path.replace("\\", "/").replace("\ ", "/");
+                                    const intentsData = require(place);
+
                                     // Create an array of intents
                                     const intentsArray = [];
-                                    for (let i = 0; i < lines.length; i++) {
-                                        const intent = lines[i].trim().split(':');
-                                        const intentName = intent[0].trim();
-                                        const rest = intent[1].trim().split(',');;
-                                        const intentDescription = rest[0].trim();
-                                        const intentTraining = rest[1].trim().replace("[", "").replace("]", "").split(";").map(item => item.trim());
-                                        const intentResponse = rest[2].trim().replace("[", "").replace("]", "");
+                                    for (const intentName in intentsData) {
+                                        const intentData = intentsData[intentName];
+                                        const intentTraining = intentData.questions;
+                                        const intentResponse = intentData.answer;
 
                                         const newIntent = {
                                             owner: decoded.id,
                                             title: intentName,
-                                            description: intentDescription,
+                                            description: intentData.description,
                                             training: intentTraining,
                                             response: intentResponse,
                                             frompl: true
-                                        }
+                                        };
                                         intentsArray.push(newIntent);
                                     }
 
                                     // check we have info for all intents
-                                    if (intentsArray.length !== result.length) {
+                                    if (intentsArray.length < result.length) {
                                         res.status(400).json({ message: "Intent file does not contain all needed info" });
                                     }
 
@@ -124,8 +120,6 @@ router.post('/', Uploader, async (req, res) => {
                                     } catch (err) {
                                         res.status(400).json({ message: err.message });
                                     }
-
-
 
                                     const pl = new Line({
                                         owner: decoded.id,
@@ -288,7 +282,8 @@ router.delete('/mine/:id', async (req, res) => {
         try {
             const pl = await Line.findById(req.params.id);
             if (pl.owner.toString() === decoded.id) {
-                fs.unlinkSync(pl.location);
+                const folderPath = "./lines/" + pl._id;
+                fs.rmdirSync(folderPath, { recursive: true });
                 await pl.remove();
                 res.json({ message: "Line deleted" });
             } else {
@@ -310,7 +305,8 @@ router.delete('/:id', async (req, res) => {
         if (decoded.id === ADMIN_ID) {
             try {
                 const pl = await Line.findById(req.params.id);
-                fs.unlinkSync(pl.location);
+                const folderPath = "./lines/" + pl._id;
+                fs.rmdirSync(folderPath, { recursive: true });
                 await pl.remove();
                 res.json({ message: "Line deleted" });
             } catch (err) {

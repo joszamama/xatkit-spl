@@ -154,6 +154,7 @@ router.patch('/mine/:id', async (req, res) => {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
                 const intent = await Intent.findById(req.params.id);
+
                 if (!intent) {
                     res.status(404).json({ message: "Intent not found" });
                 } else if (intent.owner != verify.id) {
@@ -166,7 +167,7 @@ router.patch('/mine/:id', async (req, res) => {
                         intent.description = req.body.description;
                     }
                     if (req.body.training) {
-                        intent.training = req.body.training.split(',').map(item => item.trim());
+                        intent.training = req.body.training;
                     }
                     if (req.body.response) {
                         intent.response = req.body.response;
@@ -215,7 +216,7 @@ router.patch('/:id', async (req, res) => {
                         intent.description = req.body.description;
                     }
                     if (req.body.training) {
-                        intent.training = req.body.training.split(',').map(item => item.trim());
+                        intent.training = req.body.training;
                     }
                     if (req.body.response) {
                         intent.response = req.body.response;
@@ -259,9 +260,9 @@ router.delete('/mine/:id', async (req, res) => {
                 } else if (intent.owner != verify.id) {
                     res.status(404).json({ message: "You are not authorized to delete this intent" });
                 } else {
-                    const deletedIntent = await Intent.findByIdAndDelete(req.params.id);
-                    const deletedChatbots = await Chatbot.updateMany({ intents: req.params.id }, { $pull: { intents: req.params.id }, $set: { compiled: false } });
-                    res.json(deletedIntent.cleanup());
+                    await Intent.findByIdAndDelete(req.params.id);
+                    await Chatbot.updateMany({ intents: req.params.id }, { $pull: { intents: req.params.id }, $set: { compiled: false } });
+                    res.status(200).json({ message: "Intent deleted" });
                 }
             } else {
                 res.status(404).json({ message: "You are not authorized to delete this intent" });
@@ -284,9 +285,9 @@ router.delete('/:id', async (req, res) => {
                 if (!intent) {
                     res.status(404).json({ message: "Intent not found" });
                 } else {
-                    const deletedIntent = await Intent.findByIdAndDelete(req.params.id);
-                    const deletedChatbots = await Chatbot.updateMany({ intents: req.params.id }, { $pull: { intents: req.params.id }, $set: { compiled: false } });
-                    res.json(deletedIntent.cleanup());
+                    await Intent.findByIdAndDelete(req.params.id);
+                    await Chatbot.updateMany({ intents: req.params.id }, { $pull: { intents: req.params.id }, $set: { compiled: false } });
+                    res.status(200).json({ message: "Intent deleted" });
                 }
             } else {
                 res.status(404).json({ message: "You are not authorized to delete this intent" });
