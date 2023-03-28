@@ -1,7 +1,6 @@
 const { createLogger, format, transports } = require('winston');
-const chalk = require('chalk');
-
 const { combine, timestamp, printf } = format;
+const chalk = require('chalk');
 
 const prettyFormatter = printf(({ level, message, timestamp }) => {
     const levelColors = {
