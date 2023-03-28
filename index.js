@@ -43,8 +43,8 @@ connectToDatabase()
 
     app.get('/', (req, res) => {
       logger.info('GET /');
-      res.send('Xatkit-SPL API Server is running with version 1.0.0')
-    })
+      res.sendFile(__dirname + '/views/home.html');
+    })    
 
     app.listen(port, () => {
       logger.info(`Server is running on port ${port}`);
