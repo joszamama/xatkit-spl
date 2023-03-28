@@ -4,8 +4,17 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const logger = require('./commons/Logger');
 
+const UserRoutes = require('./routes/UserRoutes');
+const IntentRoutes = require('./routes/IntentRoutes');
+const ChatbotRoutes = require('./routes/ChatbotRoutes');
+const DatabaseRoutes = require('./routes/SettingRoutes');
+const LineRoutes = require('./routes/LineRoutes');
+
+const port = process.env.PORT || 3000;
+const app = express();
+
 require('dotenv').config();
-mongoose.set('strictQuery', true);
+mongoose.set('strictQuery', false);
 
 console.log(`
 Y88b   d88P          8G8    8G8      d8b 8G8           .d8888b.  8G88888b.  8G8      
@@ -25,33 +34,27 @@ async function connectToDatabase() {
 connectToDatabase()
   .then(() => {
     logger.info('Connected to database');
-    const port = process.env.PORT || 3000;
-    const UserRoutes = require('./routes/UserRoutes');
-    const IntentRoutes = require('./routes/IntentRoutes');
-    const ChatbotRoutes = require('./routes/ChatbotRoutes');
-    const DatabaseRoutes = require('./routes/SettingRoutes');
-    const PLRoutes = require('./routes/LineRoutes');
 
-    const app = express();
     app.use(express.json());
     app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)
-    app.use('/api/v1/lines', PLRoutes)
+    app.use('/api/v1/lines', LineRoutes)
     app.use('/api/v1/settings', DatabaseRoutes)
 
     app.get('/', (req, res) => {
       logger.info('GET /');
-      res.sendFile(__dirname + '/views/home.html');
-    })    
+      res.status(200).sendFile(__dirname + '/views/home.html');
+    })
 
     app.listen(port, () => {
       logger.info(`Server is running on port ${port}`);
     })
 
-    module.exports = app;
   })
   .catch((error) => {
     logger.error(`Error connecting to database: ${error}`);
   });
+
+module.exports = app;
