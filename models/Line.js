@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const PLSchema = new mongoose.Schema({
+const LineSchema = new mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: [true, "can't be blank"]},
     title: { type: String, validate: [/^\S*$/, 'Title cannot contain spaces'], required: [true, "can't be blank"], index: true },
     description: { type: String, required: [true, "can't be blank"] },
@@ -10,7 +10,7 @@ const PLSchema = new mongoose.Schema({
     location: { type: String, required: [true, "can't be blank"] },
 }, { timestamps: true })
 
-PLSchema.methods.cleanup = function () {
+LineSchema.methods.cleanup = function () {
     return {
         id: this._id,
         owner: this.owner,
@@ -23,4 +23,4 @@ PLSchema.methods.cleanup = function () {
     }
 }
 
-module.exports = mongoose.model('PL', PLSchema)
+module.exports = mongoose.model('Line', LineSchema)

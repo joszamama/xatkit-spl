@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', true);
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const logger = require('./commons/Logger');
@@ -14,7 +16,6 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 require('dotenv').config();
-mongoose.set('strictQuery', false);
 
 console.log(`
 Y88b   d88P          8G8    8G8      d8b 8G8           .d8888b.  8G88888b.  8G8      
@@ -28,7 +29,7 @@ d88P   Y88b "Y888888  "Y888 888  888 888  "Y888        "Y8888P"  888        8888
 `);
 
 async function connectToDatabase() {
-  await mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost:27017/xatkit-spl');
+  await mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost:27017/xatkit-spl-test');
 }
 
 connectToDatabase()

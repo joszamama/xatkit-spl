@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
-const PL = require('../models/Line');
+const Line = require('../models/Line');
 const router = express.Router()
 require('dotenv').config();
 
@@ -175,7 +175,7 @@ router.post('/', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
-                const pl = await PL.findOne({ pl: req.body.pl });
+                const pl = await Line.findOne({ pl: req.body.pl });
                 const intentFeatures = pl.core;
                 const everyIntent = pl.intents;
                 // remove req.body.intents from everyIntent to get the remaining intents

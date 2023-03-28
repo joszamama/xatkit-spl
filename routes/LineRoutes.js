@@ -1,5 +1,5 @@
 const express = require('express');
-const PL = require('../models/Line');
+const Line = require('../models/Line');
 const jwt = require("jsonwebtoken");
 const Uploader = require('../commons/Uploader');
 const fs = require('fs');
@@ -13,7 +13,7 @@ require('dotenv').config();
 const ADMIN_ID = process.env.ADMIN_ID;
 const FLAMA_API_URL = process.env.FLAMA_API_URL;
 
-// Create a new PL
+// Create a new Line
 router.post('/', Uploader, async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
@@ -127,7 +127,7 @@ router.post('/', Uploader, async (req, res) => {
 
 
 
-                                    const pl = new PL({
+                                    const pl = new Line({
                                         owner: decoded.id,
                                         title: req.body.title,
                                         description: req.body.description,
@@ -138,7 +138,7 @@ router.post('/', Uploader, async (req, res) => {
                                     });
                                     pl.save();
 
-                                    res.status(201).json({ message: "PL created" });
+                                    res.status(201).json({ message: "Line created" });
                                 }
                             } catch (err) {
                                 res.status(400).json({ message: err.message });
@@ -146,7 +146,7 @@ router.post('/', Uploader, async (req, res) => {
                         } else {
                             // if not success, delete file from server and return error
                             await fs.promises.unlink(req.file.path);
-                            res.status(400).json({ message: "UVL does not represent a valid PL" });
+                            res.status(400).json({ message: "UVL does not represent a valid Line" });
                         }
                     });
                 } catch (err) {
@@ -156,21 +156,21 @@ router.post('/', Uploader, async (req, res) => {
                 res.status(400).json({ message: "Wrong file definition" });
             }
         } else {
-            res.status(400).json({ message: "Wrong PL definition" });
+            res.status(400).json({ message: "Wrong Line definition" });
         }
     } else {
         res.status(401).json({ message: "No token provided" });
     }
 })
 
-// Get all PLs (ADMIN ONLY)
+// Get all Lines (ADMIN ONLY)
 router.get('/', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.id === ADMIN_ID) {
             try {
-                const pls = await PL.find();
+                const pls = await Line.find();
                 res.json(pls);
             } catch (err) {
                 res.status(500).json({ message: err.message });
@@ -183,13 +183,13 @@ router.get('/', async (req, res) => {
     }
 })
 
-// Get my PLs
+// Get my Lines
 router.get('/mine', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         try {
-            const pls = await PL.find({ owner: decoded.id });
+            const pls = await Line.find({ owner: decoded.id });
             res.json(pls);
         } catch (err) {
             res.status(500).json({ message: err.message });
@@ -199,13 +199,13 @@ router.get('/mine', async (req, res) => {
     }
 })
 
-// Get my PL by ID
+// Get my Line by ID
 router.get('/mine/:id', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         try {
-            const pl = await PL.findById(req.params.id);
+            const pl = await Line.findById(req.params.id);
             if (pl.owner.toString() === decoded.id) {
                 res.json(pl);
             } else {
@@ -219,14 +219,14 @@ router.get('/mine/:id', async (req, res) => {
     }
 })
 
-// Get any PL by ID (ADMIN ONLY)
+// Get any Line by ID (ADMIN ONLY)
 router.get('/:id', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.id === ADMIN_ID) {
             try {
-                const pl = await PL.findById(req.params.id);
+                const pl = await Line.findById(req.params.id);
                 res.json(pl);
             } catch (err) {
                 res.status(500).json({ message: err.message });
@@ -239,14 +239,14 @@ router.get('/:id', async (req, res) => {
     }
 })
 
-// Get all PLs by owner (ADMIN ONLY)
+// Get all Lines by owner (ADMIN ONLY)
 router.get('/owner/:id', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.id === ADMIN_ID) {
             try {
-                const pls = await PL.find({ owner: req.params.id });
+                const pls = await Line.find({ owner: req.params.id });
                 res.json(pls);
             } catch (err) {
                 res.status(500).json({ message: err.message });
@@ -259,17 +259,17 @@ router.get('/owner/:id', async (req, res) => {
     }
 })
 
-// Delete my PL by ID
+// Delete my Line by ID
 router.delete('/mine/:id', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         try {
-            const pl = await PL.findById(req.params.id);
+            const pl = await Line.findById(req.params.id);
             if (pl.owner.toString() === decoded.id) {
                 fs.unlinkSync(pl.location);
                 await pl.remove();
-                res.json({ message: "PL deleted" });
+                res.json({ message: "Line deleted" });
             } else {
                 res.status(401).json({ message: "Unauthorized" });
             }
@@ -281,17 +281,17 @@ router.delete('/mine/:id', async (req, res) => {
     }
 })
 
-// Delete any PL by ID (ADMIN ONLY)
+// Delete any Line by ID (ADMIN ONLY)
 router.delete('/:id', async (req, res) => {
     if (req.headers.authorization) {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.id === ADMIN_ID) {
             try {
-                const pl = await PL.findById(req.params.id);
+                const pl = await Line.findById(req.params.id);
                 fs.unlinkSync(pl.location);
                 await pl.remove();
-                res.json({ message: "PL deleted" });
+                res.json({ message: "Line deleted" });
             } catch (err) {
                 res.status(500).json({ message: err.message });
             }
