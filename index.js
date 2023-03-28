@@ -29,8 +29,8 @@ connectToDatabase()
     const UserRoutes = require('./routes/UserRoutes');
     const IntentRoutes = require('./routes/IntentRoutes');
     const ChatbotRoutes = require('./routes/ChatbotRoutes');
-    const DatabaseRoutes = require('./routes/DatabaseRoutes');
-    const PLRoutes = require('./routes/PLRoutes');
+    const DatabaseRoutes = require('./routes/SettingRoutes');
+    const PLRoutes = require('./routes/LineRoutes');
 
     const app = express();
     app.use(express.json());
@@ -38,8 +38,8 @@ connectToDatabase()
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)
-    app.use('/api/v1/pl', PLRoutes)
-    app.use('/api/v1/database', DatabaseRoutes)
+    app.use('/api/v1/lines', PLRoutes)
+    app.use('/api/v1/settings', DatabaseRoutes)
 
     app.get('/', (req, res) => {
       logger.info('GET /');

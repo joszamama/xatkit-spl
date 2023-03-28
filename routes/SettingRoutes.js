@@ -6,7 +6,7 @@ require('dotenv').config();
 
 mongoose.connect(process.env.DATABASE_URL || 'mongodb://localhost:27017/xatkit-spl');
 
-router.delete('/clean', async (req, res) => {
+router.delete('/database/clean', async (req, res) => {
   try {
     const verify = jwt.verify(req.headers.authorization.split(' ')[1], process.env.JWT_SECRET);
     if (verify.id && verify.id === process.env.ADMIN_ID) {

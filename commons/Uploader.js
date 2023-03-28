@@ -3,7 +3,7 @@ const multer = require('multer');
 // Define storage settings for uploaded files
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'flama/fm')
+    cb(null, 'lines')
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname)

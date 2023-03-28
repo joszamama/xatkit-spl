@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
-const PL = require('../models/PL');
+const PL = require('../models/Line');
 const router = express.Router()
 require('dotenv').config();
 
