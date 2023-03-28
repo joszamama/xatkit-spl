@@ -29,7 +29,8 @@ connectToDatabase()
     const UserRoutes = require('./routes/UserRoutes');
     const IntentRoutes = require('./routes/IntentRoutes');
     const ChatbotRoutes = require('./routes/ChatbotRoutes');
-    const DatabaseRoutes = require('./routes/DatabaseRoutes');
+    const DatabaseRoutes = require('./routes/SettingRoutes');
+    const PLRoutes = require('./routes/LineRoutes');
 
     const app = express();
     app.use(express.json());
@@ -37,12 +38,13 @@ connectToDatabase()
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)
-    app.use('/api/v1/database', DatabaseRoutes)
+    app.use('/api/v1/lines', PLRoutes)
+    app.use('/api/v1/settings', DatabaseRoutes)
 
     app.get('/', (req, res) => {
       logger.info('GET /');
-      res.send('Xatkit-SPL API Server is running with version 1.0.0')
-    })
+      res.sendFile(__dirname + '/views/home.html');
+    })    
 
     app.listen(port, () => {
       logger.info(`Server is running on port ${port}`);

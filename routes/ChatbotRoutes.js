@@ -3,12 +3,13 @@ const jwt = require("jsonwebtoken");
 const fs = require('fs');
 const Chatbot = require('../models/Chatbot');
 const Intent = require('../models/Intent');
-const { Console } = require('console');
+const PL = require('../models/Line');
 const router = express.Router()
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const ADMIN_ID = process.env.ADMIN_ID;
+const FLAMA_API_URL = process.env.FLAMA_API_URL;
 
 // Get all chatbots (ADMIN ONLY)
 router.get('/', async (req, res) => {
@@ -174,6 +175,10 @@ router.post('/', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
+                const pl = await PL.findOne({ pl: req.body.pl });
+                const intentFeatures = pl.core;
+                const everyIntent = pl.intents;
+                // remove req.body.intents from everyIntent to get the remaining intents
                 for (let i = 0; i < req.body.intents.length; i++) {
                     try {
                         const intent = await Intent.findById(req.body.intents[i]);
@@ -181,20 +186,72 @@ router.post('/', async (req, res) => {
                             res.status(404).json({ message: "You can only create chatbots with intents that you own" });
                             return;
                         }
+                        if (intent.frompl) {
+                            intentFeatures.push(intent.title);
+                        }
                     } catch {
                         res.status(404).json({ message: "Intent not found" });
                         return;
                     }
                 }
-                const chatbot = new Chatbot({
-                    name: req.body.name,
-                    description: req.body.description,
-                    intents: req.body.intents,
-                    owner: verify.id,
-                    fallback: req.body.fallback
+
+                // create a new file named "output.csv"
+                const file = fs.createWriteStream("./flama/fm/" + req.body.name + ".csv");
+
+                // write each string from intentFeatures to a separate line in the file
+                const uniqueIntentFeatures = [...new Set(intentFeatures)];
+                uniqueIntentFeatures.forEach((str) => {
+                    file.write(`${str},True\n`);
                 });
-                const data = await chatbot.save();
-                res.json(data.cleanup());
+
+                file.end(async () => {
+                    try {
+                        const formData = new FormData();
+                        try {
+                            const modelData = fs.readFileSync(pl.location);
+                            const blob = new Blob([modelData], { type: 'application/octet-stream' });
+                            formData.append('model', blob, 'model.uvl');
+
+                            const configPath = `./flama/fm/${req.body.name}.csv`;
+                            const configData = fs.readFileSync(configPath);
+                            const blob2 = new Blob([configData], { type: 'text/csv' });
+                            formData.append('configuration', blob2, 'configuration.csv');
+
+
+                            const response = await fetch(FLAMA_API_URL + "/validate/configuration", {
+                                method: 'POST',
+                                body: formData,
+                            });
+
+                            if (response.ok) {
+                                const chatbot = new Chatbot({
+                                    name: req.body.name,
+                                    owner: verify.id,
+                                    description: req.body.description,
+                                    intents: req.body.intents,
+                                    pl: req.body.pl,
+                                    fallback: req.body.fallback,
+                                    compiled: false,
+                                });
+                                try {
+                                    const newChatbot = await chatbot.save();
+                                    res.status(201).json(newChatbot.cleanup());
+                                } catch (err) {
+                                    res.status(400).json({ message: err.message });
+                                }
+                            } else {
+                                res.status(404).json({ message: "Error validating model" });
+                            }
+                        } catch (err) {
+                            console.error(err)
+                            return res.status(500).json({ message: 'Error reading file' });
+                        }
+                    } catch {
+                        res.status(404).json({ message: "Error creating chatbot" });
+                    }
+                });
+
+
             } else {
                 res.status(404).json({ message: "You are not authorized to create this chatbot" });
             }
@@ -235,6 +292,7 @@ router.patch('/mine/:id', async (req, res) => {
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
                 if (req.body.fallback) chatbot.fallback = req.body.fallback;
+                if (req.body.pl) chatbot.pl = req.body.pl;
                 chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();
@@ -264,6 +322,7 @@ router.patch('/:id', async (req, res) => {
                 if (req.body.description) chatbot.description = req.body.description;
                 if (req.body.intents) chatbot.intents = req.body.intents;
                 if (req.body.fallback) chatbot.fallback = req.body.fallback;
+                if (req.body.pl) chatbot.pl = req.body.pl;
                 chatbot.compiled = false;
                 try {
                     const data = await chatbot.save();

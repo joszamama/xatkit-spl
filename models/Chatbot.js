@@ -6,6 +6,7 @@ const ChatbotSchema = new mongoose.Schema({
     description: { type: String, required: [true, "can't be blank"] },
     intents: { type: [mongoose.Schema.Types.ObjectId], ref: 'Intent' },
     fallback: { type: String, required: [true, "can't be blank"] },
+    pl: { type: mongoose.Schema.Types.ObjectId, ref: 'PL', required: [true, "can't be blank"] },
     compiled: { type: Boolean, default: false }
 }, { timestamps: true })
 
@@ -17,6 +18,7 @@ ChatbotSchema.methods.cleanup = function () {
         description: this.description,
         intents: this.intents,
         fallback: this.fallback,
+        pl: this.pl,
         compiled: this.compiled
     }
 }

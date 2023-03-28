@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xatkit-SPL API</title>
+    <!-- Import Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <!-- Optional: Import custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="d-flex flex-column">
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Xatkit-SPL API</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/api/v1/docs">Docs</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home section -->
+    <section id="home" class="py-5">
+        <div class="container">
+            <h1>Xatkit-SPL API</h1>
+            <p>Xatkit-SPL Backend provides an API for chatbot modeling through different technologies. The main goal is
+                to improve the utility of chatbots making them more accessible to the public with our automatic chatbot
+                builder tool.</p>
+            <h2>Intended Workflow</h2>
+            <ol>
+                <li>User logs-in the website, creating a new user.</li>
+                <li>Navigates to the configurator, and start defining a product-line-based chatbot family in an easy and
+                    understandable way + providing some basic information.</li>
+                <li>Once the user has finished the modelling, hit enter and you will be prompted to create the chatbots
+                    you need.</li>
+                <li>Define the name, the description and the intent information for this new chatbot product.</li>
+                <li>Now, your chatbot is being tested with FLAMA, which is an automated tool for feature model analysis.
+                </li>
+                <li>Once everything is ready, the chatbot gets created through Xatkit, compiles all the necessary
+                    packages and gets automatically deployed in the localhost through Docker.</li>
+            </ol>
+            <p>There are a few known bugs that we acknowledge, described in the projects section. If you detect any
+                other new bug, please consider reporting it!</p>
+
+            <h2>Built With</h2>
+            <div class="row justify-content-center pt-5">
+                <div class="col-md-2 col-sm-4 col-6 mb-4">
+                    <!-- Image 1 goes here -->
+                    <a href="https://www.docker.com/">
+                        <img src="https://aprenderbigdata.com/wp-content/uploads/docker-logo-1024x876.png"
+                            alt="Docker logo" width="100">
+                    </a>
+                </div>
+                <div class="col-md-2 pt-4 col-sm-4 col-6 mb-5">
+                    <!-- Image 2 goes here -->
+                    <a href="https://www.mongodb.com/">
+                        <img src="https://webimages.mongodb.com/_com_assets/cms/kuyjf3vea2hg34taa-horizontal_default_slate_blue.svg?auto=format%252Ccompress"
+                            alt="MongoDB logo" width="150">
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6 mb-5">
+                    <!-- Image 3 goes here -->
+                    <a href="https://xatkit.com/">
+                        <img src="https://datos.gob.es/sites/default/files/styles/image_json_ld/public/success/images/logo_xatkits.jpg"
+                            alt="Xatkit logo" width="140">
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6 mb-5">
+                    <!-- Image 4 goes here -->
+                    <a href="https://flamapy.github.io/">
+                        <img src="https://flamapy.github.io/images/illustrations/main_logo.png" alt="FLAMA logo"
+                            width="140">
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-4 col-6 mb-5">
+                    <!-- Image 5 goes here -->
+                    <a href="https://nodejs.org/">
+                        <img src="https://qph.cf2.quoracdn.net/main-qimg-0b80443be251e11df8d34cf0d57d851d"
+                            alt="Node logo" width="140">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start mt-auto">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2023 Xatkit-SPL API
+            <a href="https://github.com/joszamama/xatkit-spl-backend" target="_blank">
+                <i class="fab fa-github mx-2">Link to code repository on GitHub</i>
+            </a>
+        </div>
+
+    </footer>
+
+    <!-- Import Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <!-- Import jQuery and Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Handle click event on the navbar-toggler icon
+            $('.navbar-toggler').click(function () {
+                $('.navbar-collapse').slideToggle();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
