@@ -169,7 +169,7 @@ router.get('/all/status', async (req, res) => {
     }
 })
 
-// Create a new intent
+// Create a new chatbot 
 router.post('/', async (req, res) => {
     if (req.headers.authorization) {
         try {

@@ -37,7 +37,7 @@ connectToDatabase()
     logger.info('Connected to database');
 
     app.use(express.json());
-    app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     app.use('/api/v1/users', UserRoutes)
     app.use('/api/v1/intents', IntentRoutes)
     app.use('/api/v1/chatbots', ChatbotRoutes)

@@ -1,30 +1,17 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Xatkit-SPL",
+    "title": "Xatkit-SPL API",
     "version": "1.0.0",
     "contact": {}
   },
   "servers": [
     {
-      "url" : "https://xatkit-spl-backend.onrender.com"
+      "url": "https://xatkit-spl-backend.onrender.com"
     }
   ],
   "paths": {
     "/api/v1/users": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "ADM - Get all users",
-        "description": "ADM - Get all users",
-        "operationId": "admGetAllUsers",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
       "post": {
         "tags": [
           "Users"
@@ -40,22 +27,22 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "joszamama@gmail.com"
+                    "example": "newuser@email.com"
                   },
                   "password": {
                     "type": "string",
-                    "example": "joszamama"
+                    "example": "newuser"
                   },
                   "username": {
                     "type": "string",
-                    "example": "joszamama"
+                    "example": "newuser"
                   }
                 }
               },
               "example": {
-                "email": "joszamama@gmail.com",
-                "password": "joszamama",
-                "username": "joszamama"
+                "email": "newuser@email.com",
+                "password": "newuser",
+                "username": "newuser"
               }
             }
           }
@@ -83,17 +70,17 @@
                 "properties": {
                   "password": {
                     "type": "string",
-                    "example": "joszamama"
+                    "example": "newuser"
                   },
                   "username": {
                     "type": "string",
-                    "example": "joszamama"
+                    "example": "newuser"
                   }
                 }
               },
               "example": {
-                "password": "joszamama",
-                "username": "joszamama"
+                "password": "newuser",
+                "username": "newuser"
               }
             }
           }
@@ -119,19 +106,6 @@
           }
         }
       },
-      "delete": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Delete my user",
-        "description": "Delete my user",
-        "operationId": "deleteMyUser",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
       "patch": {
         "tags": [
           "Users"
@@ -147,17 +121,140 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "2@gmail.com"
+                    "example": "update@email.com"
                   },
                   "username": {
                     "type": "string",
-                    "example": "jejejeje"
+                    "example": "updateuser"
                   }
                 }
               },
               "example": {
-                "email": "2@gmail.com",
-                "username": "jejejeje"
+                "email": "update@email.com",
+                "username": "updateuser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete my user",
+        "description": "Delete my user",
+        "operationId": "deleteMyUser",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "/api/v1/lines": {
+        "post": {
+          "tags": [
+            "Lines"
+          ],
+          "summary": "Create a line",
+          "description": "Create a line",
+          "operationId": "createALine",
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "title"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "description"
+                    },
+                    "mode": {
+                      "type": "string",
+                      "example": "mode"
+                    },
+                    "model": {
+                      "type": "string",
+                      "format": "binary",
+                      "example": "model.uvl"
+                    },
+                    "intents": {
+                      "type": "string",
+                      "format": "binary",
+                      "example": "intents.json"
+                    }
+                  }
+                },
+                "example": {
+                  "title": "title",
+                  "description": "description",
+                  "mode": "mode",
+                  "uvl": "uvl",
+                  "intent": "intent"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lines": {
+      "post": {
+        "tags": [
+          "Lines"
+        ],
+        "summary": "Create a line",
+        "description": "Create a line",
+        "operationId": "createALine2",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "title"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "description"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "example": "mode"
+                  },
+                  "model": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "model.uvl"
+                  },
+                  "intents": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "intents.json"
+                  }
+                }
+              },
+              "example": {
+                "title": "title",
+                "description": "description",
+                "mode": "mode",
+                "uvl": "uvl",
+                "intent": "intent"
               }
             }
           }
@@ -169,14 +266,14 @@
         }
       }
     },
-    "/api/v1/users/63de5add5bb40f844c6f52bf": {
+    "/api/v1/lines/mine": {
       "get": {
         "tags": [
-          "Users"
+          "Lines"
         ],
-        "summary": "ADM - Get any user by ID",
-        "description": "ADM - Get any user by ID",
-        "operationId": "admGetAnyUserById",
+        "summary": "Get my lines",
+        "description": "Get my lines",
+        "operationId": "getMyLines",
         "responses": {
           "200": {
             "description": ""
@@ -184,14 +281,37 @@
         }
       }
     },
-    "/api/v1/users/63d961a5e3bc7a1f2b34472c": {
-      "delete": {
+    "/api/v1/lines/mine/{line_id}": {
+      "parameters": [
+        {
+          "name": "line_id",
+          "in": "path",
+          "description": "ID of the line to retrieve",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          }
+        }
+      ],
+      "get": {
         "tags": [
-          "Users"
+          "Lines"
         ],
-        "summary": "ADM - Delete any user by ID",
-        "description": "ADM - Delete any user by ID",
-        "operationId": "admDeleteAnyUserById",
+        "summary": "Get my line by ID",
+        "description": "Get my line by ID",
+        "operationId": "getMyLineById",
+        "parameters": [
+          {
+            "name": "line_id",
+            "in": "path",
+            "description": "ID of the line to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -200,11 +320,64 @@
       },
       "patch": {
         "tags": [
-          "Users"
+          "Lines"
         ],
-        "summary": "ADM - Update any user by ID",
-        "description": "ADM - Update any user by ID",
-        "operationId": "admUpdateAnyUserById",
+        "summary": "Update my line by ID",
+        "description": "Update my line by ID",
+        "operationId": "updateMyLineById",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "example": "title"
+                  },
+                  "description": {
+                    "type": "string",
+                    "example": "description"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "example": "mode"
+                  },
+                  "model": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "model.uvl"
+                  },
+                  "intents": {
+                    "type": "string",
+                    "format": "binary",
+                    "example": "intents.json"
+                  }
+                }
+              },
+              "example": {
+                "title": "title",
+                "description": "description",
+                "mode": "mode",
+                "uvl": "uvl",
+                "intent": "intent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lines"
+        ],
+        "summary": "Delete my line by ID",
+        "description": "Delete my line by ID",
+        "operationId": "deleteMyLineById",
         "responses": {
           "200": {
             "description": ""
@@ -213,19 +386,6 @@
       }
     },
     "/api/v1/intents": {
-      "get": {
-        "tags": [
-          "Intents"
-        ],
-        "summary": "ADM - Get all intents",
-        "description": "ADM - Get all intents",
-        "operationId": "admGetAllIntents",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
       "post": {
         "tags": [
           "Intents"
@@ -241,22 +401,36 @@
                 "properties": {
                   "description": {
                     "type": "string",
-                    "example": "MARIANO"
+                    "example": "description"
                   },
                   "title": {
                     "type": "string",
-                    "example": "1"
+                    "example": "title"
                   },
                   "training": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "example": [
+                        "training1",
+                        "training2"
+                      ]
+                    }
+                  },
+                  "response": {
                     "type": "string",
-                    "example": "MAR, IA, NO"
+                    "example": "response"
                   }
                 }
               },
               "example": {
-                "description": "MARIANO",
-                "title": "1",
-                "training": "MAR, IA, NO"
+                "description": "description",
+                "title": "Bot",
+                "training": [
+                  "training1",
+                  "training2"
+                ],
+                "responses": "response"
               }
             }
           }
@@ -283,14 +457,25 @@
         }
       }
     },
-    "/api/v1/intents/mine/63d963f96d00790ea0c0d9b2": {
-      "delete": {
+    "/api/v1/intents/mine/{intent_id}": {
+      "get": {
         "tags": [
           "Intents"
         ],
-        "summary": "Delete my intent by ID",
-        "description": "Delete my intent by ID",
-        "operationId": "deleteMyIntentById",
+        "summary": "Get my intent by ID",
+        "description": "Get my intent by ID",
+        "operationId": "getMyIntentById",
+        "parameters": [
+          {
+            "name": "intent_id",
+            "in": "path",
+            "description": "ID of the intent to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -304,6 +489,17 @@
         "summary": "Update my intent by ID",
         "description": "Update my intent by ID",
         "operationId": "updateMyIntentById",
+        "parameters": [
+          {
+            "name": "intent_id",
+            "in": "path",
+            "description": "ID of the intent to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -312,115 +508,48 @@
                 "properties": {
                   "title": {
                     "type": "string",
-                    "example": "cafe calienteee"
+                    "example": "newTitle"
                   }
                 }
               },
               "example": {
-                "title": "cafe calienteee"
+                "title": "newTitle"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "The intent was updated successfully"
           }
         }
-      }
-    },
-    "/api/v1/intents/63de924cff5d1d5e2188a624": {
-      "get": {
-        "tags": [
-          "Intents"
-        ],
-        "summary": "ADM - Get any intent by ID",
-        "description": "ADM - Get any intent by ID",
-        "operationId": "admGetAnyIntentById",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/intents/owner/63de5add5bb40f844c6f52bf": {
-      "get": {
-        "tags": [
-          "Intents"
-        ],
-        "summary": "ADM - Get all intents from user ID",
-        "description": "ADM - Get all intents from user ID",
-        "operationId": "admGetAllIntentsFromUserId",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/intents/63d963f96d00790ea0c0d9b2": {
-      "patch": {
-        "tags": [
-          "Intents"
-        ],
-        "summary": "ADM - Update any intent by ID",
-        "description": "ADM - Update any intent by ID",
-        "operationId": "admUpdateAnyIntentById",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "title": {
-                    "type": "string",
-                    "example": "holaaa que tall"
-                  }
-                }
-              },
-              "example": {
-                "title": "holaaa que tall"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/api/v1/intents/63de962b34081711931668cc": {
+      },
       "delete": {
         "tags": [
           "Intents"
         ],
-        "summary": "ADM - Delete any intent by ID",
-        "description": "ADM - Delete any intent by ID",
-        "operationId": "admDeleteAnyIntentById",
+        "summary": "Delete my intent by ID",
+        "description": "Delete my intent by ID",
+        "operationId": "deleteMyIntentById",
+        "parameters": [
+          {
+            "name": "intent_id",
+            "in": "path",
+            "description": "ID of the intent to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "The intent was deleted successfully"
           }
         }
       }
     },
     "/api/v1/chatbots": {
-      "get": {
-        "tags": [
-          "Chatbots"
-        ],
-        "summary": "ADM - Get all chatbots",
-        "description": "ADM - Get all chatbots",
-        "operationId": "admGetAllChatbots",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
       "post": {
         "tags": [
           "Chatbots"
@@ -436,30 +565,37 @@
                 "properties": {
                   "description": {
                     "type": "string",
-                    "example": "CARLITOSBOT"
+                    "example": "newChatbot"
                   },
                   "intents": {
                     "type": "array",
                     "items": {
                       "type": "string",
-                      "example": "63debe9878d39a8cc462f7b9"
+                      "example": [
+                        "63debe9878d39a8cc462f7b9",
+                        "63debe9878d39a8cc462fa29"
+                      ]
                     },
                     "example": [
-                      "63debe9878d39a8cc462f7b9"
+                      [
+                        "63debe9878d39a8cc462f7b9",
+                        "63debe9878d39a8cc462fa29"
+                      ]
                     ]
                   },
                   "name": {
                     "type": "string",
-                    "example": "CARLITOSBOT"
+                    "example": "newChatbot"
                   }
                 }
               },
               "example": {
-                "description": "CARLITOSBOT",
+                "description": "Create a chatbot",
                 "intents": [
-                  "63debe9878d39a8cc462f7b9"
+                  "63debe9878d39a8cc462f7b9",
+                  "63debe9878d39a8cc462fa29"
                 ],
-                "name": "CARLITOSBOT"
+                "name": "newChatbot"
               }
             }
           }
@@ -486,14 +622,37 @@
         }
       }
     },
-    "/api/v1/chatbots/mine/63debede78d39a8cc462f7c2": {
-      "delete": {
+    "/api/v1/chatbots/mine/{chatbot_id}": {
+      "parameters": [
+        {
+          "name": "chatbot_id",
+          "in": "path",
+          "description": "ID of the chatbot to retrieve",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "63debede78d39a8cc462f7c2"
+          }
+        }
+      ],
+      "get": {
         "tags": [
           "Chatbots"
         ],
-        "summary": "Delete my chatbot by ID",
-        "description": "Delete my chatbot by ID",
-        "operationId": "deleteMyChatbotById",
+        "summary": "Get my chatbot by ID",
+        "description": "Get my chatbot by ID",
+        "operationId": "getMyChatbotById",
+        "parameters": [
+          {
+            "name": "chatbot_id",
+            "in": "path",
+            "description": "ID of the chatbot to get",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -540,9 +699,34 @@
             "description": ""
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Chatbots"
+        ],
+        "summary": "Delete my chatbot by ID",
+        "description": "Delete my chatbot by ID",
+        "operationId": "deleteMyChatbotById",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     },
-    "/api/chatbots/63d965aa6d00790ea0c0d9c1/compile": {
+    "/api/v1/chatbots/{chatbot_id}/compile": {
+      "parameters": [
+        {
+          "name": "chatbot_id",
+          "in": "path",
+          "description": "ID of the chatbot to compile",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          }
+        }
+      ],
       "post": {
         "tags": [
           "Chatbots"
@@ -556,103 +740,136 @@
           }
         }
       }
-    },
-    "/api/v1/chatbots/63d965aa6d00790ea0c0d9c1": {
-      "get": {
-        "tags": [
-          "Chatbots"
-        ],
-        "summary": "ADM - Get any chatbot by ID",
-        "description": "ADM - Get any chatbot by ID",
-        "operationId": "admGetAnyChatbotById",
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
-    "/api/v1/chatbots/owner/63deb6c1dd6a29bd414e3067": {
-      "get": {
-        "tags": [
-          "Chatbots"
-        ],
-        "summary": "ADM - Get all chatbots from user ID",
-        "description": "ADM - Get all chatbots from user ID",
-        "operationId": "admGetAllChatbotsFromUserId",
-        "responses": {
-          "200": {
-            "description": ""
+    "schemas": {
+      "users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          },
+          "username": {
+            "type": "string",
+            "example": "username"
+          },
+          "email": {
+            "type": "string",
+            "example": [
+              "user@email.com"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "example": "password"
           }
         }
-      }
-    },
-    "/api/v1/chatbots/63debede78d39a8cc462f7c2": {
-      "patch": {
-        "tags": [
-          "Chatbots"
-        ],
-        "summary": "ADM - Update anychatbot by ID",
-        "description": "ADM - Update anychatbot by ID",
-        "operationId": "admUpdateAnychatbotById",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "intents": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "example": "63debe9878d39a8cc462f7b9"
-                    },
-                    "example": [
-                      "63debe9878d39a8cc462f7b9",
-                      "63debe9f78d39a8cc462f7bb"
-                    ]
-                  }
-                }
-              },
-              "example": {
-                "intents": [
-                  "63debe9878d39a8cc462f7b9",
-                  "63debe9f78d39a8cc462f7bb"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
+      },
+      "lines": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          },
+          "title": {
+            "type": "string",
+            "example": "title"
+          },
+          "description": {
+            "type": "string",
+            "example": "description"
+          },
+          "mode": {
+            "type": "string",
+            "example": "LeafOnly"
+          },
+          "model": {
+            "type": "string",
+            "format": "binary",
+            "example": "model.uvl"
+          },
+          "intents": {
+            "type": "string",
+            "format": "binary",
+            "example": "intents.json"
           }
         }
-      }
-    },
-    "/api/v1/chatbots/63d958cd4e88057d27f1c0cf": {
-      "delete": {
-        "tags": [
-          "Chatbots"
-        ],
-        "summary": "ADM - Delete any chatbot by user ID",
-        "description": "ADM - Delete any chatbot by user ID",
-        "operationId": "admDeleteAnyChatbotByUserId",
-        "responses": {
-          "200": {
-            "description": ""
+      },
+      "intents": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          },
+          "title": {
+            "type": "string",
+            "example": "name"
+          },
+          "description": {
+            "type": "string",
+            "example": "description"
+          },
+          "training": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "training"
+            },
+            "example": [
+              "training1",
+              "training2"
+            ]
+          },
+          "response": {
+            "type": "string",
+            "example": "response"
           }
         }
-      }
-    },
-    "/": {
-      "get": {
-        "summary": "Healthcheck",
-        "description": "Healthcheck",
-        "operationId": "healthcheck",
-        "responses": {
-          "200": {
-            "description": ""
+      },
+      "chatbots": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          },
+          "name": {
+            "type": "string",
+            "example": "name"
+          },
+          "description": {
+            "type": "string",
+            "example": "description"
+          },
+          "intents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "63d965aa6d00790ea0c0d9c1"
+            },
+            "example": [
+              "63d965aa6d00790ea0c0d9c1",
+              "63d965aa6d00790ea0c0d9c2"
+            ]
+          },
+          "pl": {
+            "type": "string",
+            "example": "63d965aa6d00790ea0c0d9c1"
+          },
+          "fallback": {
+            "type": "string",
+            "example": "fallback"
           }
         }
       }
@@ -661,6 +878,9 @@
   "tags": [
     {
       "name": "Users"
+    },
+    {
+      "name": "Lines"
     },
     {
       "name": "Intents"
