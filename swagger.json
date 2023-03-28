@@ -7,7 +7,17 @@
   },
   "servers": [
     {
-      "url": "https://xatkit-spl-backend.onrender.com"
+      "url": "https://xatkit-spl-backend.onrender.com",
+      "description": "Production server"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "paths": {
@@ -152,61 +162,6 @@
         "responses": {
           "200": {
             "description": ""
-          }
-        }
-      },
-      "/api/v1/lines": {
-        "post": {
-          "tags": [
-            "Lines"
-          ],
-          "summary": "Create a line",
-          "description": "Create a line",
-          "operationId": "createALine",
-          "requestBody": {
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "example": "title"
-                    },
-                    "description": {
-                      "type": "string",
-                      "example": "description"
-                    },
-                    "mode": {
-                      "type": "string",
-                      "example": "mode"
-                    },
-                    "model": {
-                      "type": "string",
-                      "format": "binary",
-                      "example": "model.uvl"
-                    },
-                    "intents": {
-                      "type": "string",
-                      "format": "binary",
-                      "example": "intents.json"
-                    }
-                  }
-                },
-                "example": {
-                  "title": "title",
-                  "description": "description",
-                  "mode": "mode",
-                  "uvl": "uvl",
-                  "intent": "intent"
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": ""
-            }
           }
         }
       }
@@ -744,7 +699,7 @@
   },
   "components": {
     "securitySchemes": {
-      "apikey": {
+      "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
