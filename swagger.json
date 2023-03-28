@@ -518,6 +518,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "newChatbot"
+                  },
                   "description": {
                     "type": "string",
                     "example": "newChatbot"
@@ -538,19 +542,25 @@
                       ]
                     ]
                   },
-                  "name": {
+                  "fallback": {
                     "type": "string",
-                    "example": "newChatbot"
+                    "example": "fallback"
+                  },
+                  "pl": {
+                    "type": "string",
+                    "example": "63debe9878d39a8cc462f7b9"
                   }
                 }
               },
               "example": {
+                "name": "newChatbot",
                 "description": "Create a chatbot",
                 "intents": [
                   "63debe9878d39a8cc462f7b9",
                   "63debe9878d39a8cc462fa29"
                 ],
-                "name": "newChatbot"
+                "fallback": "fallback",
+                "pl": "63debe9878d39a8cc462f7b9"
               }
             }
           }
