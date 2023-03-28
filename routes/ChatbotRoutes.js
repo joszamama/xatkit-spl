@@ -196,7 +196,7 @@ router.post('/', async (req, res) => {
                 }
 
                 // create a new file named "output.csv"
-                const file = fs.createWriteStream("./flama/fm/" + req.body.name + ".csv");
+                const file = fs.createWriteStream("./lines/" + pl._id + "/" + req.body.name + ".csv");
 
                 // write each string from intentFeatures to a separate line in the file
                 const uniqueIntentFeatures = [...new Set(intentFeatures)];
@@ -208,11 +208,13 @@ router.post('/', async (req, res) => {
                     try {
                         const formData = new FormData();
                         try {
-                            const modelData = fs.readFileSync(pl.location);
+                            const modelPlace = "./lines/" + pl._id + "/" + pl.location.split("\\")[1];
+                            console.log(modelPlace);
+                            const modelData = fs.readFileSync(modelPlace);
                             const blob = new Blob([modelData], { type: 'application/octet-stream' });
                             formData.append('model', blob, 'model.uvl');
 
-                            const configPath = `./flama/fm/${req.body.name}.csv`;
+                            const configPath = "./lines/" + pl._id + "/" + req.body.name + ".csv";
                             const configData = fs.readFileSync(configPath);
                             const blob2 = new Blob([configData], { type: 'text/csv' });
                             formData.append('configuration', blob2, 'configuration.csv');
@@ -250,8 +252,6 @@ router.post('/', async (req, res) => {
                         res.status(404).json({ message: "Error creating chatbot" });
                     }
                 });
-
-
             } else {
                 res.status(404).json({ message: "You are not authorized to create this chatbot" });
             }
@@ -354,10 +354,9 @@ router.delete('/mine/:id', async (req, res) => {
                         res.status(404).json({ message: "You can only delete chatbots that you own" });
                         return;
                     }
-                    await Chatbot.deleteOne({ _id: req.params.id });
-                    if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
-                        fs.unlink(`./bots/${data._id.toString()}.json`);
-                    }
+                    const folderPath = "./bots/" + data.id;
+                    fs.rmdirSync(folderPath, { recursive: true });
+                    await data.remove();
                     res.json({ message: "Chatbot deleted" });
                 } catch (error) {
                     res.status(404).json({ message: "Chatbot not found" });
@@ -381,10 +380,10 @@ router.delete('/:id', async (req, res) => {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id && verify.id === ADMIN_ID) {
                 try {
-                    await Chatbot.deleteOne({ _id: req.params.id });
-                    if (fs.existsSync(`./bots/${data._id.toString()}.json`)) {
-                        fs.unlink(`./bots/${data._id.toString()}.json`);
-                    }
+                    const chatbot = await Chatbot.findById(req.params.id);
+                    const folderPath = "./bots/" + chatbot.id;
+                    fs.rmdirSync(folderPath, { recursive: true });
+                    await chatbot.remove();
                     res.json({ message: "Chatbot deleted" });
                 } catch (error) {
                     res.status(404).json({ message: "Chatbot not found" });
