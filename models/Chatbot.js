@@ -6,7 +6,7 @@ const ChatbotSchema = new mongoose.Schema({
     description: { type: String, required: [true, "can't be blank"] },
     intents: { type: [mongoose.Schema.Types.ObjectId], ref: 'Intent' },
     fallback: { type: String, required: [true, "can't be blank"] },
-    pl: { type: mongoose.Schema.Types.ObjectId, ref: 'PL', required: [true, "can't be blank"] },
+    pl: { type: mongoose.Schema.Types.ObjectId, ref: 'Line', required: [true, "can't be blank"] },
     compiled: { type: Boolean, default: false }
 }, { timestamps: true })
 

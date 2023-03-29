@@ -175,14 +175,17 @@ router.post('/', async (req, res) => {
         try {
             const verify = jwt.verify(req.headers.authorization.split(' ')[1], JWT_SECRET);
             if (verify.id) {
-                const pl = await Line.findOne({ pl: req.body.pl });
+                const pl = await Line.findById({ _id: req.body.pl });
                 const intentFeatures = pl.core;
-                const everyIntent = pl.intents;
-                // remove req.body.intents from everyIntent to get the remaining intents
+                if (pl === null) {
+                    res.status(404).json({ message: "PL not found" });
+                    return;
+                }
                 for (let i = 0; i < req.body.intents.length; i++) {
                     try {
                         const intent = await Intent.findById(req.body.intents[i]);
                         if (intent.owner != verify.id) {
+                            console.log(intent.owner);
                             res.status(404).json({ message: "You can only create chatbots with intents that you own" });
                             return;
                         }
@@ -209,7 +212,6 @@ router.post('/', async (req, res) => {
                         const formData = new FormData();
                         try {
                             const modelPlace = "./lines/" + pl._id + "/" + pl.location.split("\\")[1];
-                            console.log(modelPlace);
                             const modelData = fs.readFileSync(modelPlace);
                             const blob = new Blob([modelData], { type: 'application/octet-stream' });
                             formData.append('model', blob, 'model.uvl');
