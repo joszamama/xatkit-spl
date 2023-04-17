@@ -679,7 +679,7 @@
         }
       }
     },
-    "/api/v1/chatbots/{chatbot_id}/compile": {
+    "/api/v1/chatbots/mine/{chatbot_id}/compile": {
       "parameters": [
         {
           "name": "chatbot_id",
