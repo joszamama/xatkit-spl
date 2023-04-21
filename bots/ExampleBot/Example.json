@@ -1,0 +1,27 @@
+{
+	"TakeAway": {
+		"description" : "Información sobre TakeAway",
+		"questions": ["¿Qué metodos de takeaway existen?", "¿Cómo funciona el takeaway?"],
+		"answer": "El takeaway está operativo todo el día, menos los festivos por cierre del restaurante."
+	},
+	"EatIn": {
+		"description" : "Información sobre EatIn",
+		"questions": ["¿Hay que llevar mascarilla?"],
+		"answer": "No hace falta, pero siempre es recomendable tomar medidas de precaución y seguridad."
+	},
+	"Menu": {
+		"description" : "Información sobre el Menu",
+		"questions": ["¿Qué hay en la carta?", "¿Qué puedo comer aquí?"],
+		"answer": "En la carta hay pescados y carne. En la esquina de la mesa puedes escanear el código QR donde podrás ver los precios."
+	},
+	"Lounge": {
+		"description" : "Información sobre Lounge",
+		"questions": ["¿A qué hora abre Lounge?"],
+		"answer": "El Lounge Bar abre a partir de las 12 PM, hasta las 6 AM. ¡Entra en nuestra web para ver qué artista invitado tenemos hoy!"
+	},
+	"Terrace": {
+		"description" : "Información sobre Terrace",
+		"questions": ["¿A qué hora abre Terrace?"],
+		"answer": "Esta abierto 24H, exceptuando domingos y festivos nacionales."
+	}
+}

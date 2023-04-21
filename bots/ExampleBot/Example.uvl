@@ -1,0 +1,16 @@
+features
+    Restaurant { abstract }
+        mandatory
+            Ordering { abstract }
+                or
+                    TakeAway
+                    EatIn
+            Menu
+        optional
+            Facilities { abstract }
+                alternative
+                    Lounge
+                    Terrace
+constraints
+    !EatIn => !Terrace
+    !EatIn => !Lounge
