@@ -6,6 +6,7 @@ const fs = require('fs');
 const Intent = require('../models/Intent');
 const FormData = require('form-data');
 const fetch = require('node-fetch');
+const Chatbot = require('../models/Chatbot');
 
 const router = express.Router()
 require('dotenv').config();
@@ -282,7 +283,23 @@ router.delete('/mine/:id', async (req, res) => {
         try {
             const pl = await Line.findById(req.params.id);
             if (pl.owner.toString() === decoded.id) {
-                const folderPath = "./lines/" + pl._id;
+
+                // delete all intents from attribute intents in pl
+                for (let i = 0; i < pl.intents.length; i++) {
+                    await Intent.findByIdAndDelete(pl.intents[i]);
+                }
+
+                const chatbots = await Chatbot.find({ pl: pl.id });
+                if (chatbots.length !== 0) {
+                    for (let i = 0; i < chatbots.length; i++) {
+                        const folderPath = "./bots/" + chatbots.id;
+                        fs.rmdirSync(folderPath, { recursive: true });
+                        await Chatbot.findByIdAndDelete(chatbots[i].id);
+                    }
+                }
+
+                // delete the pl file in the server
+                const folderPath = "./lines/" + pl.id;
                 fs.rmdirSync(folderPath, { recursive: true });
                 await pl.remove();
                 res.json({ message: "Line deleted" });
@@ -304,8 +321,22 @@ router.delete('/:id', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         if (decoded.id === ADMIN_ID) {
             try {
-                const pl = await Line.findById(req.params.id);
-                const folderPath = "./lines/" + pl._id;
+                // delete all intents from attribute intents in pl
+                for (let i = 0; i < pl.intents.length; i++) {
+                    await Intent.findByIdAndDelete(pl.intents[i]);
+                }
+
+                const chatbots = await Chatbot.find({ pl: pl.id });
+                if (chatbots.length !== 0) {
+                    for (let i = 0; i < chatbots.length; i++) {
+                        const folderPath = "./bots/" + chatbots.id;
+                        fs.rmdirSync(folderPath, { recursive: true });
+                        await Chatbot.findByIdAndDelete(chatbots[i].id);
+                    }
+                }
+
+                // delete the pl file in the server
+                const folderPath = "./lines/" + pl.id;
                 fs.rmdirSync(folderPath, { recursive: true });
                 await pl.remove();
                 res.json({ message: "Line deleted" });
