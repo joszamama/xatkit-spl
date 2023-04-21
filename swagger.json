@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://xatkit-spl-backend.onrender.com",
+      "url": "https://xatkit-spl-api.onrender.com",
       "description": "Production server"
     },
     {
