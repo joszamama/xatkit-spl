@@ -28,10 +28,6 @@ Intended workflow explained:
 
 There are a few known bugs that we acknowledge, described in the projects section. If you detect any other new bug, please consider reporting it!
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
 ### Built With
 
 * [MongoDB](https://www.mongodb.com/)
@@ -42,7 +38,6 @@ There are a few known bugs that we acknowledge, described in the projects sectio
 * [Docker](https://www.docker.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
@@ -69,8 +64,6 @@ First, you will need to install [NPM](https://nodejs.org/en/download/), a [Mongo
   ```
   
 Then, you can access all the endpoints through an application like [Postman](https://www.postman.com/), or using the Swagger UI in /docs.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Using the Tool
 
