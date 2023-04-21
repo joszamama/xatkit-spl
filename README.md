@@ -68,9 +68,13 @@ First, you will need to install [NPM](https://nodejs.org/en/download/), a [Mongo
   $ npm start
   ```
   
-Then, you can access all the endpoints through an application like [Postman](https://www.postman.com/)
+Then, you can access all the endpoints through an application like [Postman](https://www.postman.com/), or using the Swagger UI in /docs.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
+
+### Using the Tool
+
+Now, you can provide a valid Feature Model in UVL format, and a JSON file with information about the features in the model. You can take a look of the examples we provide in
 
 ### Deploying a Chatbot
 
