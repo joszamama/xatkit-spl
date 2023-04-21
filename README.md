@@ -74,7 +74,7 @@ Then, you can access all the endpoints through an application like [Postman](htt
 
 ### Using the Tool
 
-Now, you can provide a valid Feature Model in UVL format, and a JSON file with information about the features in the model. You can take a look of the examples we provide in
+Now, you can provide a valid Feature Model in UVL format, and a JSON file with information about the features in the model. You can take a look of the examples we provide in the bots/ExampleBot directory.
 
 ### Deploying a Chatbot
 
@@ -82,14 +82,18 @@ Once the PL -> Intent -> Chatbot process has been completed with this tool, you 
 
 1. Build the bot image:
   ```sh
-  $ docker build -t the_name_you_want_to_give_this_image . 
+  $ docker build -t newbot . 
   ```
 2. Run the chatbot:
   ```sh
-  $ docker run -t -i -p 5000:5000 -p 5001:5001 the_name_you_gave_before 
+  $ docker run -it -p 5000:5000 -p 5001:5001 newbot 
   ```
  
 Now you can access http://localhost:5000/admin and start chatting!
+
+### NLP Services
+
+If you want to take one step further and improve your bots adding a NLP layer, you will need to follow this [tutorial](https://github.com/xatkit-bot-platform/nlp.js-server). This Docker image will generate a NLP Server for Intent Recognition, and its ready to go, Xatkit-SPL will detect the server automatically and link the bots to it.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
