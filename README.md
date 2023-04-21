@@ -58,7 +58,7 @@ First, you will need to install [NPM](https://nodejs.org/en/download/), a [Mongo
 
 2. Install the NPM requisites:
   ```sh
-  $ cd xatkit-spl-backend
+  $ cd xatkit-spl-api
   $ npm install
   ```
 3. Update the .env file providing the different values shown in .env.example
